@@ -66,6 +66,7 @@ class FullPipeline:
         self._logger = getLogger(__name__)
         self._narr_lock = threading.Lock()
         self._narr_in_flight = False
+        self._narr_epoch = 0
         self._latest_narrative: NarrativeOutput | None = None
         self._latest_narrative_frame_idx: int | None = None
         self._narr_executor = ThreadPoolExecutor(
@@ -104,8 +105,9 @@ class FullPipeline:
                     frames_snapshot = list(self._frame_buffer)
                     tracks_snapshot = list(self._tracks_history)
                     self._narr_in_flight = True
+                    submit_epoch = self._narr_epoch
                     self._narr_executor.submit(
-                        self._run_narrative, frames_snapshot, tracks_snapshot, frame_idx
+                        self._run_narrative, frames_snapshot, tracks_snapshot, frame_idx, submit_epoch
                     )
 
         with self._narr_lock:
@@ -127,16 +129,18 @@ class FullPipeline:
         frames: list[np.ndarray],
         tracks_hist: list[list[Track]],
         origin_frame_idx: int,
+        epoch: int,
     ) -> None:
-        """Background worker: run VLM, update latest_narrative on success.
+        """Background worker: run VLM, update latest_narrative only if epoch still current.
 
         Exceptions are logged and swallowed to keep fast path unaffected.
         """
         try:
             out = self.narrative.describe(frames, tracks_hist)
             with self._narr_lock:
-                self._latest_narrative = out
-                self._latest_narrative_frame_idx = origin_frame_idx
+                if self._narr_epoch == epoch:
+                    self._latest_narrative = out
+                    self._latest_narrative_frame_idx = origin_frame_idx
         except Exception:
             self._logger.exception("narrative worker failed at frame %d", origin_frame_idx)
         finally:
@@ -148,10 +152,14 @@ class FullPipeline:
         return None
 
     def reset(self) -> None:
-        """Clear frame buffer, tracks history, latest narrative, and reset tracker."""
+        """Clear frame buffer, tracks history, latest narrative, and reset tracker.
+
+        Any in-flight narrative worker will have its result discarded because its epoch is now stale.
+        """
         self._frame_buffer = []
         self._tracks_history = []
         with self._narr_lock:
+            self._narr_epoch += 1
             self._latest_narrative = None
             self._latest_narrative_frame_idx = None
         self.tracker.reset()

@@ -141,6 +141,26 @@ def test_reset_clears_narrative_state() -> None:
         p.shutdown()
 
 
+def test_reset_during_in_flight_worker_discards_stale_narrative() -> None:
+    """If reset() is called while worker is still computing, worker's result is discarded."""
+    narr = _SlowNarr(sleep_s=0.3)
+    p = _make_pipeline(narr, interval=3)
+    frame = np.zeros((32, 32, 3), dtype=np.uint8)
+    try:
+        for idx in range(4):
+            p.process_frame(frame, frame_idx=idx)
+        # Worker is now running for frame 3 (still in its 300ms sleep). Reset immediately.
+        p.reset()
+        # Wait for the stale worker to finish.
+        time.sleep(0.5)
+        # Even though the stale worker completed, its result must not leak into state.
+        result = p.process_frame(frame, frame_idx=0)
+        assert result.narrative is None, "stale narrative leaked past reset()"
+        assert result.narrative_frame_idx is None
+    finally:
+        p.shutdown()
+
+
 def test_narrative_worker_exception_does_not_break_pipeline() -> None:
     """Worker-side exception is logged but does not crash process_frame or lock the slot."""
 
