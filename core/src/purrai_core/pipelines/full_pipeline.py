@@ -24,6 +24,7 @@ class PipelineResult:
     embeddings: list[ReidEmbedding]
     poses: list[PoseResult]
     narrative: NarrativeOutput | None
+    narrative_frame_idx: int | None = None
 
 
 class FullPipeline:
@@ -95,7 +96,12 @@ class FullPipeline:
             embeddings=embs,
             poses=poses,
             narrative=narr,
+            narrative_frame_idx=frame_idx if narr is not None else None,
         )
+
+    def shutdown(self) -> None:
+        """Release background workers. No-op in Task 1; real behavior added in Task 3."""
+        return None
 
     def reset(self) -> None:
         """Clear frame buffer, tracks history, and reset the tracker.

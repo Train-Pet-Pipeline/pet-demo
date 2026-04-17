@@ -104,6 +104,19 @@ def test_pipeline_triggers_vlm_on_interval() -> None:
     assert r3.narrative.text == "猫坐着"
 
 
+def test_pipeline_result_has_narrative_frame_idx() -> None:
+    """PipelineResult carries narrative_frame_idx telling consumers which frame VLM was run on."""
+    p = _make_pipeline(vlm_trigger_interval_frames=3)
+    frame = np.zeros((64, 64, 3), dtype=np.uint8)
+    r0 = p.process_frame(frame, frame_idx=0)
+    r3 = p.process_frame(frame, frame_idx=3)
+    assert r0.narrative_frame_idx is None
+    # After Task 2, the async worker might not have completed yet for frame 3, so only
+    # check the field exists; richer assertions live in test_async_narrative.py.
+    assert hasattr(r3, "narrative_frame_idx")
+    p.shutdown()
+
+
 def test_pipeline_reset_clears_state() -> None:
     """After reset(), internal buffers are empty and tracker state is cleared."""
     p = _make_pipeline(vlm_trigger_interval_frames=60)
