@@ -42,6 +42,7 @@ class FullPipeline:
         pose: PoseEstimator,
         narrative: NarrativeGenerator,
         vlm_trigger_interval_frames: int = 60,
+        parallel_reid_pose: bool = True,
     ) -> None:
         """Initialise pipeline with all five backend instances.
 
@@ -53,6 +54,8 @@ class FullPipeline:
             narrative: VLM-backed natural-language summariser.
             vlm_trigger_interval_frames: Narrative is generated every N frames
                 (frame_idx > 0 and frame_idx % N == 0).
+            parallel_reid_pose: When True, reid and pose will run concurrently
+                (executor set up in a later task); stored here for configuration.
         """
         self.detector = detector
         self.tracker = tracker
@@ -60,6 +63,7 @@ class FullPipeline:
         self.pose = pose
         self.narrative = narrative
         self.vlm_interval = vlm_trigger_interval_frames
+        self.parallel_reid_pose = parallel_reid_pose
         self._frame_buffer: list[np.ndarray] = []
         self._tracks_history: list[list[Track]] = []
 
@@ -72,6 +76,11 @@ class FullPipeline:
         self._latest_narrative_frame_idx: int | None = None
         self._narr_executor: ThreadPoolExecutor | None = ThreadPoolExecutor(
             max_workers=1, thread_name_prefix="purrai-narrative"
+        )
+        self._rp_executor: ThreadPoolExecutor | None = (
+            ThreadPoolExecutor(max_workers=2, thread_name_prefix="purrai-reid-pose")
+            if parallel_reid_pose
+            else None
         )
 
     def process_frame(self, frame: np.ndarray, frame_idx: int) -> PipelineResult:
@@ -89,8 +98,14 @@ class FullPipeline:
         dets: list[Detection] = self.detector.detect(frame)
         # Pass frame to tracker so real trackers (ByteTrack via boxmot) get the image.
         tracks: list[Track] = self.tracker.update(dets, frame_idx, frame=frame)
-        embs: list[ReidEmbedding] = self.reid.encode(frame, tracks)
-        poses: list[PoseResult] = self.pose.estimate(frame, tracks)
+        if self.parallel_reid_pose and self._rp_executor is not None:
+            f_reid = self._rp_executor.submit(self.reid.encode, frame, tracks)
+            f_pose = self._rp_executor.submit(self.pose.estimate, frame, tracks)
+            embs: list[ReidEmbedding] = f_reid.result()
+            poses: list[PoseResult] = f_pose.result()
+        else:
+            embs = self.reid.encode(frame, tracks)
+            poses = self.pose.estimate(frame, tracks)
 
         self._frame_buffer.append(frame)
         self._tracks_history.append(tracks)
@@ -154,10 +169,14 @@ class FullPipeline:
 
     def shutdown(self) -> None:
         """Release background workers. Safe to call multiple times."""
-        executor = getattr(self, "_narr_executor", None)
-        if executor is not None:
-            executor.shutdown(wait=True)
+        narr_exec = getattr(self, "_narr_executor", None)
+        if narr_exec is not None:
+            narr_exec.shutdown(wait=True)
             self._narr_executor = None
+        rp_exec = getattr(self, "_rp_executor", None)
+        if rp_exec is not None:
+            rp_exec.shutdown(wait=True)
+            self._rp_executor = None
 
     def __del__(self) -> None:
         """Best-effort cleanup when the pipeline instance is garbage-collected."""
