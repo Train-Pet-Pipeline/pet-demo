@@ -1,0 +1,27 @@
+{
+  "name": "@purrai/theme",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./tailwind-preset": "./src/tailwind-preset.ts",
+    "./fonts": "./src/fonts.ts"
+  },
+  "scripts": {
+    "lint": "eslint src --ext .ts",
+    "typecheck": "tsc --noEmit",
+    "test": "echo 'no tests' && exit 0",
+    "build": "echo 'source-package, no build' && exit 0",
+    "clean": "rm -rf .turbo"
+  },
+  "dependencies": {
+    "next": "14.2.3",
+    "tailwindcss": "3.4.3"
+  },
+  "devDependencies": {
+    "@types/node": "20.12.7"
+  }
+}
