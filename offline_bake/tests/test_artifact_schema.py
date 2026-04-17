@@ -46,14 +46,12 @@ def test_benchmarks_has_pipeline_mode() -> None:
     assert result.benchmarks.mean_fps > 0
 
 
-def test_missing_required_field_raises() -> None:
+def test_missing_required_field_raises(tmp_path: Path) -> None:
     import json
-    import tempfile
 
     bad = {"narratives": {}, "benchmarks": {"mean_fps": 1.0}}  # incomplete
-    with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False) as f:
-        json.dump(bad, f)
-        path = Path(f.name)
+    path = tmp_path / "bad.json"
+    path.write_text(json.dumps(bad))
 
-    with pytest.raises((dacite.exceptions.MissingValueError, KeyError, Exception)):
+    with pytest.raises(dacite.exceptions.MissingValueError):
         parse_golden(path)
