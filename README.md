@@ -29,9 +29,9 @@ pip install -e offline_bake/
 cd core && pytest tests/ -v
 cd ../offline_bake && pytest tests/ -v
 
-# 5. Smoke-test a bake script without real weights
+# 5. Smoke-test a bake script without real weights (run as module from repo root)
 cd ..
-python offline_bake/run_benchmarks.py \
+python -m offline_bake.run_benchmarks \
   --input core/tests/fixtures/sample.mp4 \
   --output /tmp/bench.json \
   --max-frames 20 \
@@ -45,7 +45,7 @@ cat /tmp/bench.json
 On a GPU box after `pip install 'core/[detector,tracker,reid,pose,narrative]'`:
 
 ```bash
-python offline_bake/generate_overlays.py \
+python -m offline_bake.generate_overlays \
   --input path/to/video.mp4 \
   --output /tmp/overlays.mp4 \
   --max-frames 300

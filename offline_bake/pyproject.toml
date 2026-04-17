@@ -8,7 +8,6 @@ version = "0.1.0"
 description = "PurrAI offline baking scripts: overlay generation, benchmarking, narrative sampling"
 requires-python = ">=3.10"
 dependencies = [
-    "purrai-core",
     "opencv-python-headless>=4.9",
 ]
 
