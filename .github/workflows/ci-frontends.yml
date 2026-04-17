@@ -1,0 +1,41 @@
+name: ci-frontends
+
+on:
+  pull_request:
+    paths:
+      - "frontends/**"
+      - ".github/workflows/ci-frontends.yml"
+      - "tests/fixtures/artifact-golden.json"
+  push:
+    branches: [dev, main]
+    paths:
+      - "frontends/**"
+      - ".github/workflows/ci-frontends.yml"
+      - "tests/fixtures/artifact-golden.json"
+
+jobs:
+  lint-test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontends
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 9.1.0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: frontends/.nvmrc
+          cache: pnpm
+          cache-dependency-path: frontends/pnpm-lock.yaml
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm lint
+
+      - run: pnpm typecheck
+
+      - run: pnpm test
