@@ -52,13 +52,13 @@ def render_overlays_from_pipeline_results(
     """
     md = read_metadata(input_video)
     fourcc = cv2.VideoWriter_fourcc(*"mp4v")  # type: ignore[attr-defined]
+    if use_fake_pipeline:
+        pipeline = _build_fake_pipeline()
+    else:
+        assert config_path is not None, "--config is required without --use-fake-pipeline"
+        pipeline = _build_real_pipeline(load_config(config_path))
     writer = cv2.VideoWriter(str(output_video), fourcc, md.fps, (md.width, md.height))
     try:
-        if use_fake_pipeline:
-            pipeline = _build_fake_pipeline()
-        else:
-            assert config_path is not None, "--config is required without --use-fake-pipeline"
-            pipeline = _build_real_pipeline(load_config(config_path))
         for idx, frame in iter_frames(input_video, max_frames):
             result = pipeline.process_frame(frame, idx)
             for t in result.tracks:
@@ -77,6 +77,7 @@ def render_overlays_from_pipeline_results(
                 )
             writer.write(frame)
     finally:
+        pipeline.shutdown()
         writer.release()
 
 

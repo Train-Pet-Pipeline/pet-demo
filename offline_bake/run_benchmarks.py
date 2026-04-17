@@ -27,6 +27,8 @@ def run_benchmarks(
         use_fake_pipeline: Use FakeDet/FakeTr/... instead of real models.
         config_path: Path to params.yaml (required when use_fake_pipeline=False).
     """
+    # Note: run_benchmarks calls backends directly (no FullPipeline), so no shutdown() needed.
+    # This will change in Task 8 when we add end-to-end pipeline timing.
     if use_fake_pipeline:
         from offline_bake._fakes import FakeDet, FakeNarr, FakePose, FakeReid, FakeTr
 

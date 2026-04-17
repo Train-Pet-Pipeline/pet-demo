@@ -28,6 +28,7 @@ def sample_narratives(
         config_path: Path to params.yaml (required when neither fake flag is set).
         frames_per_clip: Number of frames to sample per clip.
     """
+    # Note: sample_narratives calls narrative backend directly (no FullPipeline), so no shutdown() needed.
     # Prefer use_fake_pipeline; accept legacy use_fake_narrative for older tests.
     use_fake = use_fake_pipeline or bool(use_fake_narrative)
     if use_fake:
