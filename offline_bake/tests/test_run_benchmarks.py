@@ -38,3 +38,34 @@ def test_run_benchmarks_writes_json(sample_video: Path) -> None:
         assert data["tracker_ms"] >= 0
         assert data["reid_ms"] >= 0
         assert data["pose_ms"] >= 0
+
+
+def test_benchmarks_json_contains_pipeline_mode(sample_video: Path) -> None:
+    """benchmarks.json records which parallelism mode was used."""
+    with tempfile.TemporaryDirectory() as td:
+        out = Path(td) / "bench.json"
+        run_benchmarks(
+            input_video=sample_video,
+            output_json=out,
+            max_frames=5,
+            use_fake_pipeline=True,
+        )
+        data = json.loads(out.read_text())
+        assert "pipeline_mode" in data
+        assert data["pipeline_mode"] in {"serial", "parallel", "fake"}
+
+
+def test_benchmarks_json_contains_end_to_end_pipeline_ms(sample_video: Path) -> None:
+    """benchmarks.json includes FullPipeline.process_frame end-to-end timing."""
+    with tempfile.TemporaryDirectory() as td:
+        out = Path(td) / "bench.json"
+        run_benchmarks(
+            input_video=sample_video,
+            output_json=out,
+            max_frames=5,
+            use_fake_pipeline=True,
+        )
+        data = json.loads(out.read_text())
+        assert "pipeline_ms" in data, "end-to-end pipeline_ms missing — G4 requires it"
+        assert isinstance(data["pipeline_ms"], (int, float))
+        assert data["pipeline_ms"] >= 0
