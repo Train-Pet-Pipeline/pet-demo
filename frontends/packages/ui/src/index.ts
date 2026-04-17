@@ -1,2 +1,2 @@
-// exports populated in subsequent tasks
-export {};
+export { VideoPlayer } from "./VideoPlayer";
+export type { VideoPlayerProps } from "./VideoPlayer";
