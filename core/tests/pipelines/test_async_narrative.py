@@ -187,3 +187,23 @@ def test_narrative_worker_exception_does_not_break_pipeline() -> None:
         assert narr.call_count >= 1
     finally:
         p.shutdown()
+
+
+def test_shutdown_returns_quickly() -> None:
+    """shutdown() joins the narrative executor without hanging."""
+    narr = _SlowNarr(sleep_s=0.05)
+    p = _make_pipeline(narr, interval=3)
+    frame = np.zeros((32, 32, 3), dtype=np.uint8)
+    for idx in range(4):
+        p.process_frame(frame, frame_idx=idx)
+    t0 = time.perf_counter()
+    p.shutdown()
+    elapsed = time.perf_counter() - t0
+    assert elapsed < 3.0, f"shutdown took {elapsed:.2f}s, expected <3s"
+
+
+def test_shutdown_is_idempotent() -> None:
+    """Calling shutdown twice is safe."""
+    p = _make_pipeline(_SlowNarr(sleep_s=0.01), interval=3)
+    p.shutdown()
+    p.shutdown()  # must not raise

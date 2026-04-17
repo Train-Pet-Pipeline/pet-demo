@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import contextlib
 import threading
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
@@ -69,7 +70,7 @@ class FullPipeline:
         self._narr_epoch = 0
         self._latest_narrative: NarrativeOutput | None = None
         self._latest_narrative_frame_idx: int | None = None
-        self._narr_executor = ThreadPoolExecutor(
+        self._narr_executor: ThreadPoolExecutor | None = ThreadPoolExecutor(
             max_workers=1, thread_name_prefix="purrai-narrative"
         )
 
@@ -101,7 +102,7 @@ class FullPipeline:
 
         if frame_idx > 0 and frame_idx % self.vlm_interval == 0:
             with self._narr_lock:
-                if not self._narr_in_flight:
+                if not self._narr_in_flight and self._narr_executor is not None:
                     frames_snapshot = list(self._frame_buffer)
                     tracks_snapshot = list(self._tracks_history)
                     self._narr_in_flight = True
@@ -148,8 +149,16 @@ class FullPipeline:
                 self._narr_in_flight = False
 
     def shutdown(self) -> None:
-        """Release background workers. No-op in Task 1; real behavior added in Task 3."""
-        return None
+        """Release background workers. Safe to call multiple times."""
+        executor = getattr(self, "_narr_executor", None)
+        if executor is not None:
+            executor.shutdown(wait=True)
+            self._narr_executor = None
+
+    def __del__(self) -> None:
+        """Best-effort cleanup when the pipeline instance is garbage-collected."""
+        with contextlib.suppress(Exception):
+            self.shutdown()
 
     def reset(self) -> None:
         """Clear frame buffer, tracks history, latest narrative, and reset tracker.
