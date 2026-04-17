@@ -108,7 +108,11 @@ class FullPipeline:
                     self._narr_in_flight = True
                     submit_epoch = self._narr_epoch
                     self._narr_executor.submit(
-                        self._run_narrative, frames_snapshot, tracks_snapshot, frame_idx, submit_epoch
+                        self._run_narrative,
+                        frames_snapshot,
+                        tracks_snapshot,
+                        frame_idx,
+                        submit_epoch,
                     )
 
         with self._narr_lock:
