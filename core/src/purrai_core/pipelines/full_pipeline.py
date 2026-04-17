@@ -42,6 +42,7 @@ class FullPipeline:
         pose: PoseEstimator,
         narrative: NarrativeGenerator,
         vlm_trigger_interval_frames: int = 60,
+        parallel_reid_pose: bool = True,
     ) -> None:
         """Initialise pipeline with all five backend instances.
 
@@ -53,6 +54,8 @@ class FullPipeline:
             narrative: VLM-backed natural-language summariser.
             vlm_trigger_interval_frames: Narrative is generated every N frames
                 (frame_idx > 0 and frame_idx % N == 0).
+            parallel_reid_pose: When True, reid and pose will run concurrently
+                (executor set up in a later task); stored here for configuration.
         """
         self.detector = detector
         self.tracker = tracker
@@ -60,6 +63,7 @@ class FullPipeline:
         self.pose = pose
         self.narrative = narrative
         self.vlm_interval = vlm_trigger_interval_frames
+        self.parallel_reid_pose = parallel_reid_pose
         self._frame_buffer: list[np.ndarray] = []
         self._tracks_history: list[list[Track]] = []
 
