@@ -1,0 +1,51 @@
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "purrai-offline-bake"
+version = "0.1.0"
+description = "PurrAI offline baking scripts: overlay generation, benchmarking, narrative sampling"
+requires-python = ">=3.10"
+dependencies = [
+    "purrai-core",
+    "opencv-python-headless>=4.9",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4",
+    "pytest-cov>=4.1",
+    "ruff>=0.5",
+    "mypy>=1.10",
+    "types-PyYAML",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["offline_bake", "offline_bake.*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra -v"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "SIM"]
+ignore = ["E501"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+
+[[tool.mypy.overrides]]
+module = ["cv2", "cv2.*"]
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = ["purrai_core", "purrai_core.*"]
+ignore_missing_imports = true
+follow_imports = "skip"
