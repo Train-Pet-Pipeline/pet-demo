@@ -12,6 +12,8 @@ from purrai_core.pipelines.full_pipeline import FullPipeline
 from purrai_core.types import PoseResult, Track
 from purrai_core.utils.video_io import iter_frames, read_metadata
 
+from offline_bake._pose_skeleton import get_edges
+
 
 def _draw_track(frame: np.ndarray, track: Track) -> None:
     """Draw bounding box and track label onto frame in-place."""
@@ -28,10 +30,39 @@ def _draw_track(frame: np.ndarray, track: Track) -> None:
     )
 
 
-def _draw_pose(frame: np.ndarray, pose: PoseResult) -> None:
-    """Draw keypoint circles onto frame in-place."""
-    for kp in pose.keypoints:
-        cv2.circle(frame, (int(kp.x), int(kp.y)), 3, (64, 93, 62), -1)
+def _draw_pose(
+    frame: np.ndarray,
+    pose: PoseResult,
+    edges: list[tuple[int, int]] | None = None,
+    keypoint_threshold: float = 0.3,
+) -> None:
+    """Draw keypoint circles and skeleton lines onto frame in-place.
+
+    Args:
+        frame: BGR uint8 image to draw on.
+        pose: PoseResult carrying keypoints.
+        edges: List of (idx_a, idx_b) pairs to connect; if None or empty, only points drawn.
+        keypoint_threshold: Endpoints below this score are omitted from connection drawing.
+    """
+    kps = pose.keypoints
+    for kp in kps:
+        if kp.score >= keypoint_threshold:
+            cv2.circle(frame, (int(kp.x), int(kp.y)), 3, (64, 93, 62), -1)
+    if not edges:
+        return
+    for a, b in edges:
+        if a >= len(kps) or b >= len(kps):
+            continue
+        ka, kb = kps[a], kps[b]
+        if ka.score < keypoint_threshold or kb.score < keypoint_threshold:
+            continue
+        cv2.line(
+            frame,
+            (int(ka.x), int(ka.y)),
+            (int(kb.x), int(kb.y)),
+            (64, 93, 62),
+            1,
+        )
 
 
 def render_overlays_from_pipeline_results(
@@ -52,19 +83,23 @@ def render_overlays_from_pipeline_results(
     """
     md = read_metadata(input_video)
     fourcc = cv2.VideoWriter_fourcc(*"mp4v")  # type: ignore[attr-defined]
+    if use_fake_pipeline:
+        pipeline = _build_fake_pipeline()
+        keypoint_threshold = 0.3
+    else:
+        assert config_path is not None, "--config is required without --use-fake-pipeline"
+        cfg = load_config(config_path)
+        pipeline = _build_real_pipeline(cfg)
+        keypoint_threshold = float(cfg.section("pose")["keypoint_threshold"])
+    edges = get_edges()
     writer = cv2.VideoWriter(str(output_video), fourcc, md.fps, (md.width, md.height))
     try:
-        if use_fake_pipeline:
-            pipeline = _build_fake_pipeline()
-        else:
-            assert config_path is not None, "--config is required without --use-fake-pipeline"
-            pipeline = _build_real_pipeline(load_config(config_path))
         for idx, frame in iter_frames(input_video, max_frames):
             result = pipeline.process_frame(frame, idx)
             for t in result.tracks:
                 _draw_track(frame, t)
             for pose in result.poses:
-                _draw_pose(frame, pose)
+                _draw_pose(frame, pose, edges=edges, keypoint_threshold=keypoint_threshold)
             if result.narrative is not None:
                 cv2.putText(
                     frame,
@@ -77,6 +112,7 @@ def render_overlays_from_pipeline_results(
                 )
             writer.write(frame)
     finally:
+        pipeline.shutdown()
         writer.release()
 
 
@@ -107,13 +143,15 @@ def _build_real_pipeline(cfg: object) -> FullPipeline:
     cfg_any: Any = cfg
     assert hasattr(cfg_any, "section"), "cfg must be a Config object from load_config()"
     sec = cfg_any.section
+    pipe_sec = sec("pipeline")
     return FullPipeline(
         detector=YOLOv10Detector(sec("detector")),
         tracker=ByteTrackTracker(sec("tracker")),
         reid=OSNetReid(sec("reid")),
         pose=MMPosePoseEstimator(sec("pose")),
         narrative=Qwen2VLNarrative(sec("narrative")),
-        vlm_trigger_interval_frames=int(sec("pipeline")["vlm_trigger_interval_frames"]),
+        vlm_trigger_interval_frames=int(pipe_sec["vlm_trigger_interval_frames"]),
+        parallel_reid_pose=bool(pipe_sec.get("parallel_reid_pose", True)),
     )
 
 

@@ -49,6 +49,7 @@ narrative:
 pipeline:
   vlm_trigger_interval_frames: 60
   vlm_trigger_on_detection_change: true
+  parallel_reid_pose: true
 
 # ---- Logging ----
 logging:

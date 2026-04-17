@@ -83,34 +83,58 @@ def _make_pipeline(vlm_trigger_interval_frames: int = 60) -> FullPipeline:
 def test_pipeline_processes_single_frame() -> None:
     """A single frame produces tracks, embeddings, and poses but no narrative."""
     p = _make_pipeline()
-    frame = np.zeros((64, 64, 3), dtype=np.uint8)
-    result = p.process_frame(frame, frame_idx=0)
-    assert isinstance(result, PipelineResult)
-    assert len(result.tracks) == 1
-    assert len(result.embeddings) == 1
-    assert len(result.poses) == 1
+    try:
+        frame = np.zeros((64, 64, 3), dtype=np.uint8)
+        result = p.process_frame(frame, frame_idx=0)
+        assert isinstance(result, PipelineResult)
+        assert len(result.tracks) == 1
+        assert len(result.embeddings) == 1
+        assert len(result.poses) == 1
+    finally:
+        p.shutdown()
 
 
 def test_pipeline_triggers_vlm_on_interval() -> None:
-    """Narrative is generated only on frames whose index is a multiple of the interval."""
+    """Narrative is produced eventually after the interval frame (async)."""
+    import time as _time
+
     p = _make_pipeline(vlm_trigger_interval_frames=3)
-    frame = np.zeros((64, 64, 3), dtype=np.uint8)
-    r0 = p.process_frame(frame, frame_idx=0)
-    r1 = p.process_frame(frame, frame_idx=1)
-    r3 = p.process_frame(frame, frame_idx=3)
-    assert r0.narrative is None
-    assert r1.narrative is None
-    assert r3.narrative is not None
-    assert r3.narrative.text == "猫坐着"
+    try:
+        frame = np.zeros((64, 64, 3), dtype=np.uint8)
+        for idx in range(4):
+            p.process_frame(frame, frame_idx=idx)
+        _time.sleep(0.1)  # give async worker time to finish (FakeNarr is instant)
+        r5 = p.process_frame(frame, frame_idx=5)
+        assert r5.narrative is not None
+        assert r5.narrative.text == "猫坐着"
+        assert r5.narrative_frame_idx == 3
+    finally:
+        p.shutdown()
+
+
+def test_pipeline_result_has_narrative_frame_idx() -> None:
+    """PipelineResult carries narrative_frame_idx telling consumers which frame VLM was run on."""
+    p = _make_pipeline(vlm_trigger_interval_frames=3)
+    try:
+        frame = np.zeros((64, 64, 3), dtype=np.uint8)
+        r0 = p.process_frame(frame, frame_idx=0)
+        r3 = p.process_frame(frame, frame_idx=3)
+        assert r0.narrative_frame_idx is None
+        assert hasattr(r3, "narrative_frame_idx")
+    finally:
+        p.shutdown()
 
 
 def test_pipeline_reset_clears_state() -> None:
     """After reset(), internal buffers are empty and tracker state is cleared."""
     p = _make_pipeline(vlm_trigger_interval_frames=60)
-    frame = np.zeros((64, 64, 3), dtype=np.uint8)
-    p.process_frame(frame, frame_idx=0)
-    assert len(p._frame_buffer) == 1
-    assert len(p._tracks_history) == 1
-    p.reset()
-    assert len(p._frame_buffer) == 0
-    assert len(p._tracks_history) == 0
+    try:
+        frame = np.zeros((64, 64, 3), dtype=np.uint8)
+        p.process_frame(frame, frame_idx=0)
+        assert len(p._frame_buffer) == 1
+        assert len(p._tracks_history) == 1
+        p.reset()
+        assert len(p._frame_buffer) == 0
+        assert len(p._tracks_history) == 0
+    finally:
+        p.shutdown()

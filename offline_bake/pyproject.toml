@@ -48,3 +48,8 @@ ignore_missing_imports = true
 module = ["purrai_core", "purrai_core.*"]
 ignore_missing_imports = true
 follow_imports = "skip"
+
+[[tool.mypy.overrides]]
+module = ["mmpose", "mmpose.*"]
+ignore_missing_imports = true
+follow_imports = "skip"
