@@ -118,5 +118,7 @@ export function requireDashboardPassword(): string {
 }
 
 export function isAuthDisabled(): boolean {
-  return process.env.DASHBOARD_AUTH_DISABLED === "true";
+  if (process.env.DASHBOARD_AUTH_DISABLED === "true") return true;
+  const s = process.env.DASHBOARD_AUTH_SECRET;
+  return !s || s.length < MIN_SECRET_LENGTH;
 }

@@ -8,7 +8,8 @@ export const config = {
 
 export default async function middleware(req: NextRequest) {
   if (isAuthDisabled()) return NextResponse.next();
-  if (req.nextUrl.pathname === "/login") return NextResponse.next();
+  const pathname = req.nextUrl.pathname.replace(/\/+$/, "") || "/";
+  if (pathname === "/login") return NextResponse.next();
 
   const cookie = req.cookies.get(COOKIE_NAME)?.value ?? "";
   const secret = requireAuthSecret();
@@ -17,7 +18,7 @@ export default async function middleware(req: NextRequest) {
 
   const url = req.nextUrl.clone();
   url.pathname = "/login";
-  const nextTarget = req.nextUrl.pathname + (req.nextUrl.search || "");
+  const nextTarget = pathname + (req.nextUrl.search || "");
   url.searchParams.set("next", nextTarget);
   return NextResponse.redirect(url, 307);
 }
