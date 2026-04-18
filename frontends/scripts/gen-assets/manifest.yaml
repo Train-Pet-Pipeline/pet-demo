@@ -1,0 +1,45 @@
+version: 1
+outputRoot: ../../apps/landing/public/images
+entries:
+  - id: hero
+    promptFile: prompts/hero.md
+    output: hero.avif
+    provider: doubao
+    providerFallback: unsplash
+    aspect: "16:9"
+    width: 2400
+  - id: privacy-step-1
+    promptFile: prompts/privacy-step-1.md
+    output: privacy/step-1.avif
+    provider: doubao
+    providerFallback: unsplash
+    aspect: "1:1"
+    width: 1024
+  - id: privacy-step-2
+    promptFile: prompts/privacy-step-2.md
+    output: privacy/step-2.avif
+    provider: doubao
+    providerFallback: unsplash
+    aspect: "1:1"
+    width: 1024
+  - id: privacy-step-3
+    promptFile: prompts/privacy-step-3.md
+    output: privacy/step-3.avif
+    provider: doubao
+    providerFallback: unsplash
+    aspect: "1:1"
+    width: 1024
+  - id: pain-point
+    promptFile: prompts/pain-point.md
+    output: pain-point.avif
+    provider: doubao
+    providerFallback: unsplash
+    aspect: "21:9"
+    width: 2800
+  - id: closing
+    promptFile: prompts/closing.md
+    output: closing.avif
+    provider: doubao
+    providerFallback: unsplash
+    aspect: "16:9"
+    width: 2000
