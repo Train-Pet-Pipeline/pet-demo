@@ -15,3 +15,16 @@ bake_out/
 offline_bake/assets_out/
 models_cache/
 wandb/
+
+# frontends
+node_modules/
+.turbo/
+.next/
+out/
+*.tsbuildinfo
+playwright-report/
+frontends/apps/dashboard/public/artifacts/overlays/
+frontends/apps/dashboard/public/artifacts/posters/
+
+# superpowers workflow artifacts
+.superpowers/

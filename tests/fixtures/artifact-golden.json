@@ -1,0 +1,25 @@
+{
+  "narratives": {
+    "clip_1": {
+      "video": "overlays/clip_1.mp4",
+      "poster": "posters/clip_1.jpg",
+      "label": "猫·饮水行为",
+      "narratives": [
+        { "frame": 60, "time_s": 2.0, "text": "猫走向水碗", "confidence": 0.91 },
+        { "frame": 120, "time_s": 4.0, "text": "低头饮水 3 秒", "confidence": 0.87 }
+      ]
+    }
+  },
+  "benchmarks": {
+    "mean_fps": 27.4,
+    "detector_ms": 8.2,
+    "tracker_ms": 1.1,
+    "reid_ms": 6.4,
+    "pose_ms": 5.9,
+    "narrative_ms": 1820.0,
+    "pipeline_ms": 18.1,
+    "pipeline_mode": "parallel",
+    "total_frames": 300,
+    "total_seconds": 10.0
+  }
+}

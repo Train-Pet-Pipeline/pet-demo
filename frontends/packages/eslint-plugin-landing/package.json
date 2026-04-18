@@ -1,0 +1,16 @@
+{
+  "name": "eslint-plugin-landing",
+  "version": "0.1.0",
+  "private": true,
+  "main": "./index.cjs",
+  "scripts": {
+    "test": "vitest run",
+    "lint": "echo 'no lint for plugin' && exit 0",
+    "typecheck": "echo 'cjs only — skip tsc' && exit 0",
+    "clean": "rm -rf coverage"
+  },
+  "devDependencies": {
+    "eslint": "8.57.0",
+    "vitest": "1.5.0"
+  }
+}

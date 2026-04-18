@@ -1,0 +1,70 @@
+name: ci-frontends
+
+on:
+  pull_request:
+    paths:
+      - "frontends/**"
+      - ".github/workflows/ci-frontends.yml"
+      - "tests/fixtures/artifact-golden.json"
+  push:
+    branches: [dev, main]
+    paths:
+      - "frontends/**"
+      - ".github/workflows/ci-frontends.yml"
+      - "tests/fixtures/artifact-golden.json"
+
+jobs:
+  lint-test-build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontends
+    env:
+      DASHBOARD_AUTH_SECRET: ci-ci-ci-ci-ci-ci-ci-ci-ci-ci-ci-32
+      DASHBOARD_PASSWORD: letmein
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 9.1.0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: frontends/.nvmrc
+          cache: pnpm
+          cache-dependency-path: frontends/pnpm-lock.yaml
+
+      - run: pnpm install --frozen-lockfile
+
+      - run: pnpm lint
+
+      - run: pnpm typecheck
+
+      - run: pnpm test
+
+      - run: pnpm -F dashboard build
+
+      - run: pnpm -F dashboard exec playwright install --with-deps chromium
+
+      - run: pnpm -F dashboard test:e2e
+
+      - if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: frontends/apps/dashboard/playwright-report/
+          retention-days: 7
+
+      - run: pnpm -F landing build
+
+      - run: pnpm -F landing exec playwright install --with-deps chromium
+
+      - run: pnpm -F landing test:e2e
+
+      - if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-landing
+          path: frontends/apps/landing/playwright-report/
+          retention-days: 7

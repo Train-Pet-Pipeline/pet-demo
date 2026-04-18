@@ -13,6 +13,10 @@ PETKIT-grade showcase repo for Train-Pet-Pipeline. Demonstrates the AI health-wa
 - `core/` — installable Python package `purrai-core` with 5 Protocol interfaces, 5 real backends, FullPipeline, utils
 - `offline_bake/` — three CLI scripts (overlays / benchmarks / narratives) for generating landing/dashboard assets
 - `offline_bake/_fakes.py` — **only** allowed Fake-backend site, used by `--use-fake-pipeline` CLI flag and offline_bake tests
+- `frontends/` — pnpm workspace (M2+): `apps/dashboard/` (Next.js 14) + `packages/ui` + `packages/theme`. Use `pnpm -F dashboard <task>` from `frontends/` root
+- `frontends/scripts/gen-assets/` — visual asset pipeline (Doubao-Seedance + Unsplash fallback); manifest-driven, output committed
+- `frontends/apps/landing/` — public landing page (Next.js 14 + next-intl, 8 sections, Vercel project separate from dashboard)
+- `scripts/` — operator shell (`bake-artifacts.sh`, `fetch-artifacts.sh`, `build-offline-bundle.sh`); all take `$VERSION` (default `v0.2.0`) as first arg
 
 ## Git workflow
 
