@@ -11,7 +11,7 @@ export default defineConfig({
     command: "pnpm dev",
     url: "http://localhost:3000/login",
     reuseExistingServer: !process.env.CI,
-    timeout: 120_000,
+    timeout: 180_000,
     env: {
       DASHBOARD_AUTH_SECRET: "test-secret-32bytes-0123456789abcdef",
       DASHBOARD_PASSWORD: "letmein",

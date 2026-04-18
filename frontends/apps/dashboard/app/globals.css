@@ -9,14 +9,14 @@
 html, body {
   background: #FFFCF7;
   color: #1F1A17;
-  font-family: var(--font-inter), system-ui, sans-serif;
+  font-family: "Inter Variable", Inter, system-ui, sans-serif;
   min-height: 100%;
 }
 
 .font-serif {
-  font-family: var(--font-playfair), Georgia, serif;
+  font-family: "Playfair Display Variable", "Playfair Display", Georgia, serif;
 }
 
 .font-serif-sc {
-  font-family: var(--font-noto-serif-sc), serif;
+  font-family: "Noto Serif SC", serif;
 }
