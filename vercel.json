@@ -1,0 +1,6 @@
+{
+  "installCommand": "cd frontends && pnpm install --frozen-lockfile",
+  "buildCommand": "scripts/fetch-artifacts.sh v0.2.0 && cd frontends && pnpm -F dashboard build",
+  "outputDirectory": "frontends/apps/dashboard/.next",
+  "framework": "nextjs"
+}

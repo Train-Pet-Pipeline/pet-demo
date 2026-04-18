@@ -1,0 +1,26 @@
+version: "0.2.0"
+conf_warn_threshold: 0.6
+# Per-clip narrative window config (also used by sample_narratives_windowed)
+narrative_window_frames: 60
+narrative_frames_per_window: 6
+clips:
+  - id: clip_1
+    source: ../pet-data/samples/cat_drinking_01.mp4
+    label: 猫·饮水行为
+    max_frames: 180
+    notes: "展示 Re-ID 识别同只猫;预期触及水碗时点"
+  - id: clip_2
+    source: ../pet-data/samples/cat_grooming_01.mp4
+    label: 猫·梳毛动作
+    max_frames: 180
+    notes: "姿态关节可视化效果强"
+  - id: clip_3
+    source: ../pet-data/samples/dog_toy_01.mp4
+    label: 狗·玩具互动
+    max_frames: 180
+    notes: "跨物种示例"
+  - id: clip_4
+    source: ../pet-data/samples/cats_multi_01.mp4
+    label: 猫·多目标 Re-ID
+    max_frames: 240
+    notes: "Re-ID ID 保持演示"
