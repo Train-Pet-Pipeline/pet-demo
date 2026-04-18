@@ -4,4 +4,5 @@ export default {
   images: { unoptimized: offline },
   trailingSlash: true,
   transpilePackages: ["@purrai/ui", "@purrai/theme"],
+  env: { NEXT_PUBLIC_OFFLINE_BUNDLE: offline ? "1" : "0" },
 };
