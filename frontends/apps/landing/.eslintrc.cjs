@@ -1,17 +1,17 @@
 module.exports = {
   extends: ["next/core-web-vitals"],
   root: false,
-  plugins: ["landing"],
+  plugins: ["frontends"],
   overrides: [
     {
       files: ["components/sections/**/*.{ts,tsx}"],
       rules: {
-        "landing/no-hex-literals": "error",
-        "landing/require-schematic-overlay": "error",
+        "frontends/no-hex-literals": "error",
+        "frontends/require-schematic-overlay": "error",
       },
     },
   ],
   settings: {
-    // local plugin resolution: next will pick up via `eslint-plugin-landing/` symlink
+    // local plugin resolution: next will pick up via `eslint-plugin-frontends/` symlink
   },
 };

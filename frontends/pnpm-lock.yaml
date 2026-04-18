@@ -84,6 +84,9 @@ importers:
       autoprefixer:
         specifier: 10.4.19
         version: 10.4.19(postcss@8.4.38)
+      eslint-plugin-frontends:
+        specifier: workspace:*
+        version: link:../../packages/eslint-plugin-frontends
       jsdom:
         specifier: 24.0.0
         version: 24.0.0
@@ -151,9 +154,9 @@ importers:
       autoprefixer:
         specifier: 10.4.19
         version: 10.4.19(postcss@8.4.38)
-      eslint-plugin-landing:
+      eslint-plugin-frontends:
         specifier: workspace:*
-        version: link:../../packages/eslint-plugin-landing
+        version: link:../../packages/eslint-plugin-frontends
       jsdom:
         specifier: 24.0.0
         version: 24.0.0
@@ -167,7 +170,7 @@ importers:
         specifier: 1.5.0
         version: 1.5.0(@types/node@20.12.7)(jsdom@24.0.0)
 
-  packages/eslint-plugin-landing:
+  packages/eslint-plugin-frontends:
     devDependencies:
       eslint:
         specifier: 8.57.0
