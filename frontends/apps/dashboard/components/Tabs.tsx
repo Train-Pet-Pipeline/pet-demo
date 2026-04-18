@@ -7,7 +7,7 @@ export type TabKey = "overview" | "clips" | "benchmarks";
 export function Tabs({
   panels,
 }: {
-  panels: Record<TabKey, { label: string; render: () => ReactNode }>;
+  panels: Record<TabKey, { label: string; content: ReactNode }>;
 }) {
   const [active, setActive] = useState<TabKey>("overview");
   const keys = Object.keys(panels) as TabKey[];
@@ -33,7 +33,7 @@ export function Tabs({
           })}
         </ul>
       </nav>
-      <div className="mx-auto max-w-6xl px-6 py-8">{panels[active].render()}</div>
+      <div className="mx-auto max-w-6xl px-6 py-8">{panels[active].content}</div>
     </>
   );
 }

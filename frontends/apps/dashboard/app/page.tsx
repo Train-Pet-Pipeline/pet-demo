@@ -20,10 +20,10 @@ export default async function DashboardPage() {
           panels={{
             overview: {
               label: "Overview",
-              render: () => <OverviewTab narratives={narratives} benchmarks={benchmarks} />,
+              content: <OverviewTab narratives={narratives} benchmarks={benchmarks} />,
             },
-            clips: { label: "Clips", render: () => <ClipsTab narratives={narratives} /> },
-            benchmarks: { label: "Benchmarks", render: () => <BenchmarksTab benchmarks={benchmarks} /> },
+            clips: { label: "Clips", content: <ClipsTab narratives={narratives} /> },
+            benchmarks: { label: "Benchmarks", content: <BenchmarksTab benchmarks={benchmarks} /> },
           }}
         />
       </main>
