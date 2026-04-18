@@ -1,6 +1,6 @@
 // components/CanvasOverlay.tsx
 "use client";
-import { useEffect, useRef, type RefObject } from "react";
+import { useCallback, useEffect, useRef, type RefObject } from "react";
 import { findFrameAt } from "@/lib/frame-lookup";
 
 interface TrackFrame { t: number; tracks: { id: number; bbox: number[]; score: number }[]; }
@@ -28,7 +28,7 @@ export function CanvasOverlay({ videoRef, tracks, poses, showBBox, showPose, tic
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const rafRef = useRef<number | null>(null);
 
-  const draw = () => {
+  const draw = useCallback(() => {
     const video = videoRef.current;
     const canvas = canvasRef.current;
     if (!video || !canvas) return;
@@ -82,12 +82,12 @@ export function CanvasOverlay({ videoRef, tracks, poses, showBBox, showPose, tic
         }
       }
     }
-  };
+  }, [videoRef, tracks, poses, showBBox, showPose]);
 
   // `tick` prop lets tests force a synchronous draw; layer toggles trigger
   // a redraw here (the rVFC/timeupdate loop is set up once below with [] deps
   // so the continuous loop isn't re-created on every toggle change).
-  useEffect(() => { draw(); }, [tick, showBBox, showPose]);
+  useEffect(() => { draw(); }, [draw, tick]);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -100,9 +100,9 @@ export function CanvasOverlay({ videoRef, tracks, poses, showBBox, showPose, tic
       const loop = () => {
         if (stopped) return;
         draw();
-        (video as any).requestVideoFrameCallback(loop);
+        video.requestVideoFrameCallback(loop);
       };
-      (video as any).requestVideoFrameCallback(loop);
+      video.requestVideoFrameCallback(loop);
       cleanup = () => { stopped = true; };
     } else {
       const onTimeUpdate = () => draw();
@@ -114,7 +114,7 @@ export function CanvasOverlay({ videoRef, tracks, poses, showBBox, showPose, tic
       };
     }
     return cleanup;
-  }, []);
+  }, [draw, videoRef]);
 
   return (
     <canvas
