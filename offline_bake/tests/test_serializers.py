@@ -29,3 +29,30 @@ def test_serialize_tracks_sorted_by_time():
     ]
     out = serialize_tracks(frames, fps=25)
     assert [f["t"] for f in out["frames"]] == [0.0, 0.08]
+
+
+from purrai_core.types import Keypoint, PoseResult
+from purrai_core.backends.pose_schema import AP10K_KPT_NAMES
+from offline_bake.serializers import serialize_poses
+
+def _pose(pid, pts):
+    kps = [Keypoint(name=AP10K_KPT_NAMES[i], x=x, y=y, score=s)
+           for i, (x, y, s) in enumerate(pts)]
+    return PoseResult(track_id=pid, keypoints=kps)
+
+def test_serialize_poses_17_keypoints():
+    pts = [(10.0 + i, 20.0 + i, 0.9 - i * 0.01) for i in range(17)]
+    frames = [(0.0, [_pose(1, pts)])]
+    out = serialize_poses(frames, fps=25)
+    assert out["schema"] == "ap10k-17"
+    assert out["fps"] == 25
+    assert len(out["frames"][0]["poses"][0]["keypoints"]) == 17
+    assert out["frames"][0]["poses"][0]["keypoints"][0] == [10.0, 20.0, 0.9]
+
+def test_serialize_poses_missing_keypoints_padded_as_zero_conf():
+    kps = [Keypoint(name=AP10K_KPT_NAMES[0], x=1.0, y=2.0, score=0.9)]
+    frames = [(0.0, [PoseResult(track_id=1, keypoints=kps)])]
+    out = serialize_poses(frames, fps=25)
+    kpts = out["frames"][0]["poses"][0]["keypoints"]
+    assert len(kpts) == 17
+    assert kpts[1] == [0.0, 0.0, 0.0]
