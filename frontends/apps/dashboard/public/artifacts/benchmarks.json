@@ -1,0 +1,12 @@
+{
+  "mean_fps": 27.4,
+  "detector_ms": 8.2,
+  "tracker_ms": 1.1,
+  "reid_ms": 6.4,
+  "pose_ms": 5.9,
+  "narrative_ms": 1820.0,
+  "pipeline_ms": 18.1,
+  "pipeline_mode": "parallel",
+  "total_frames": 300,
+  "total_seconds": 10.0
+}

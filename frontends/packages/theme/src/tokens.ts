@@ -16,8 +16,8 @@ export const radii = {
 } as const;
 
 export const fontFamilies = {
-  serif: ['"Playfair Display"', "Georgia", "serif"].join(", "),
-  sans: ["Inter", "system-ui", "sans-serif"].join(", "),
+  serif: ['"Playfair Display Variable"', '"Playfair Display"', "Georgia", "serif"].join(", "),
+  sans: ['"Inter Variable"', "Inter", "system-ui", "sans-serif"].join(", "),
   serifSC: ['"Noto Serif SC"', "serif"].join(", "),
 } as const;
 

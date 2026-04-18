@@ -1,0 +1,22 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+html, body {
+  background: #FFFCF7;
+  color: #1F1A17;
+  font-family: "Inter Variable", Inter, system-ui, sans-serif;
+  min-height: 100%;
+}
+
+.font-serif {
+  font-family: "Playfair Display Variable", "Playfair Display", Georgia, serif;
+}
+
+.font-serif-sc {
+  font-family: "Noto Serif SC", serif;
+}

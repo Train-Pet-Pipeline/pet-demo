@@ -1,0 +1,39 @@
+{
+  "clip_1": {
+    "video": "overlays/clip_1.mp4",
+    "poster": "posters/clip_1.jpg",
+    "label": "猫·饮水行为",
+    "narratives": [
+      { "frame": 60, "time_s": 2.0, "text": "猫走向水碗", "confidence": 0.91 },
+      { "frame": 120, "time_s": 4.0, "text": "低头饮水 3 秒", "confidence": 0.87 },
+      { "frame": 170, "time_s": 5.67, "text": "抬头四顾", "confidence": 0.79 }
+    ]
+  },
+  "clip_2": {
+    "video": "overlays/clip_2.mp4",
+    "poster": "posters/clip_2.jpg",
+    "label": "猫·梳毛动作",
+    "narratives": [
+      { "frame": 45, "time_s": 1.5, "text": "坐下", "confidence": 0.88 },
+      { "frame": 110, "time_s": 3.67, "text": "后腿抓耳后", "confidence": 0.84 }
+    ]
+  },
+  "clip_3": {
+    "video": "overlays/clip_3.mp4",
+    "poster": "posters/clip_3.jpg",
+    "label": "狗·玩具互动",
+    "narratives": [
+      { "frame": 50, "time_s": 1.67, "text": "叼起玩具", "confidence": 0.92 },
+      { "frame": 140, "time_s": 4.67, "text": "甩头甩动", "confidence": 0.86 }
+    ]
+  },
+  "clip_4": {
+    "video": "overlays/clip_4.mp4",
+    "poster": "posters/clip_4.jpg",
+    "label": "猫·多目标 Re-ID",
+    "narratives": [
+      { "frame": 90, "time_s": 3.0, "text": "两只猫先后进入画面", "confidence": 0.89 },
+      { "frame": 180, "time_s": 6.0, "text": "Track-1 返回，ID 保持", "confidence": 0.83 }
+    ]
+  }
+}
