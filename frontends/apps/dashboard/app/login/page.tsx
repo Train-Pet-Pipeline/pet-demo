@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 
+// Note: in Next 14 App Router, client-component pages receive searchParams as a sync prop.
+// Update required if upgrading to Next 15 (becomes Promise).
 export default function LoginPage({ searchParams }: { searchParams: { next?: string } }) {
   const [password, setPassword] = useState("");
   const [err, setErr] = useState<string | null>(null);

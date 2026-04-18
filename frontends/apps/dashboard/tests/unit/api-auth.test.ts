@@ -67,4 +67,32 @@ describe("POST /api/auth", () => {
     const body = (await res.json()) as { ok: boolean; next: string };
     expect(body.next).toBe("/clips?filter=active");
   });
+
+  it("sanitizes open-redirect: backslash variant \\evil.com falls back to /", async () => {
+    const res = await POST(req({ password: "letmein", next: "\\evil.com" }));
+    expect(res.status).toBe(200);
+    const body = (await res.json()) as { ok: boolean; next: string };
+    expect(body.next).toBe("/");
+  });
+
+  it("sanitizes open-redirect: backslash-slash variant \\/evil.com falls back to /", async () => {
+    const res = await POST(req({ password: "letmein", next: "\\/evil.com" }));
+    expect(res.status).toBe(200);
+    const body = (await res.json()) as { ok: boolean; next: string };
+    expect(body.next).toBe("/");
+  });
+
+  it("sanitizes open-redirect: URL-encoded /%2F%2Fevil.com falls back to /", async () => {
+    const res = await POST(req({ password: "letmein", next: "/%2F%2Fevil.com" }));
+    expect(res.status).toBe(200);
+    const body = (await res.json()) as { ok: boolean; next: string };
+    expect(body.next).toBe("/");
+  });
+
+  it("sanitizes CRLF injection attempt", async () => {
+    const res = await POST(req({ password: "letmein", next: "/path\r\nSet-Cookie: pwned=1" }));
+    expect(res.status).toBe(200);
+    const body = (await res.json()) as { ok: boolean; next: string };
+    expect(body.next).toBe("/");
+  });
 });

@@ -15,8 +15,23 @@ export const runtime = "nodejs";
 
 function sanitizeNext(raw: unknown): string {
   if (typeof raw !== "string") return "/";
-  // Must start with "/" (relative) AND not "//" (protocol-relative to evil.com).
-  if (!raw.startsWith("/") || raw.startsWith("//")) return "/";
+  // Browsers normalize "\" → "/" in URLs, so "\evil.com" becomes "/evil.com"
+  // and "\/evil.com" becomes "//evil.com" at navigation time.
+  if (raw.includes("\\")) return "/";
+  // Defensively decode once to catch "/%2F%2Fevil.com" → "///evil.com".
+  // decodeURIComponent throws on malformed input — treat as hostile.
+  let decoded: string;
+  try {
+    decoded = decodeURIComponent(raw);
+  } catch {
+    return "/";
+  }
+  // Must be a same-origin path: starts with "/" AND not "//" AND no CRLF.
+  if (!decoded.startsWith("/")) return "/";
+  if (decoded.startsWith("//")) return "/";
+  if (/[\r\n\0]/.test(decoded)) return "/";
+  // Return the original (pre-decode) string so legitimate percent-encoding (e.g.,
+  // spaces, non-ASCII) is preserved for the browser to re-encode consistently.
   return raw;
 }
 
