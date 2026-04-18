@@ -7,30 +7,7 @@ from __future__ import annotations
 
 from typing import Iterable
 
-from purrai_core.types import PoseResult, Track
-
-# AP-10K 17-keypoint names — mirrors purrai_core.backends.mmpose_pose.AP10K_KPT_NAMES.
-# Defined here to avoid pulling in the mmpose inference backend as a serializer
-# dependency; inference backends require GPU/mmpose libraries not needed at bake time.
-AP10K_KPT_NAMES: list[str] = [
-    "left_eye",
-    "right_eye",
-    "nose",
-    "neck",
-    "root_of_tail",
-    "left_shoulder",
-    "left_elbow",
-    "left_front_paw",
-    "right_shoulder",
-    "right_elbow",
-    "right_front_paw",
-    "left_hip",
-    "left_knee",
-    "left_back_paw",
-    "right_hip",
-    "right_knee",
-    "right_back_paw",
-]
+from purrai_core.types import Track
 
 
 def _bbox_xywh(t: Track) -> list[int]:
