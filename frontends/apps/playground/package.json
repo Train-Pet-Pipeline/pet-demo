@@ -1,0 +1,40 @@
+{
+  "name": "playground",
+  "private": true,
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "next dev -p 3200",
+    "build": "next build",
+    "start": "next start -p 3200",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:e2e": "playwright test"
+  },
+  "dependencies": {
+    "next": "14.2.3",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "zod": "3.23.8",
+    "@purrai/theme": "workspace:*",
+    "@purrai/ui": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "5.4.5",
+    "@types/react": "18.3.2",
+    "@types/react-dom": "18.3.0",
+    "@types/node": "20.12.12",
+    "tailwindcss": "3.4.3",
+    "postcss": "8.4.38",
+    "autoprefixer": "10.4.19",
+    "eslint": "8.57.0",
+    "eslint-config-next": "14.2.3",
+    "eslint-plugin-frontends": "workspace:*",
+    "vitest": "1.5.0",
+    "@vitejs/plugin-react": "4.3.0",
+    "jsdom": "24.0.0",
+    "@testing-library/react": "15.0.7",
+    "@testing-library/jest-dom": "6.4.5",
+    "@playwright/test": "1.50.0"
+  }
+}
