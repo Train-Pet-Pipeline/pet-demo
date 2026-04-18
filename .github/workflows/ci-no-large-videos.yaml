@@ -1,0 +1,14 @@
+# .github/workflows/ci-no-large-videos.yaml
+name: ci-no-large-videos
+on:
+  pull_request:
+    paths: ['**/*.mp4', 'scripts/check-video-size.sh']
+  push:
+    branches: [dev, main]
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run video size check
+        run: bash scripts/check-video-size.sh
