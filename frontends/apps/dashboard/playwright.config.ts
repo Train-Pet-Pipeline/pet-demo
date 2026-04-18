@@ -8,7 +8,7 @@ export default defineConfig({
   use: { baseURL: "http://localhost:3000", trace: "on-first-retry" },
   projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
   webServer: {
-    command: "pnpm dev",
+    command: process.env.CI ? "pnpm start" : "pnpm dev",
     url: "http://localhost:3000/login",
     reuseExistingServer: !process.env.CI,
     timeout: 180_000,
