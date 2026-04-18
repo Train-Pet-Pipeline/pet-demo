@@ -21,6 +21,7 @@ node_modules/
 .turbo/
 .next/
 out/
+*.tsbuildinfo
 playwright-report/
 frontends/apps/dashboard/public/artifacts/overlays/
 frontends/apps/dashboard/public/artifacts/posters/
