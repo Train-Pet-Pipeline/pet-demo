@@ -42,7 +42,12 @@ export function ClipViewer({ slug, clip, tracks, poses, narratives }: Props) {
     return () => v.removeEventListener("timeupdate", onTime);
   }, [onTime]);
 
-  const jump = (t: number) => { if (videoRef.current) videoRef.current.currentTime = t; };
+  const jump = (t: number) => {
+    if (videoRef.current) {
+      videoRef.current.currentTime = t;
+      setChapterIdx(findChapterIndex(narratives.chapters, t));
+    }
+  };
 
   return (
     <div className="grid grid-cols-3 gap-6 p-6 max-w-6xl mx-auto">
