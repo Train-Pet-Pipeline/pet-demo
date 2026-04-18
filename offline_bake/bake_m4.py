@@ -182,7 +182,7 @@ def bake_m4_from_yaml(
             )
             (bundle / "narratives.json").write_text(json.dumps(narr))
 
-            _extract_thumb(raw_dst, bundle / "thumb.avif", at_s=duration / 2)
+            _extract_thumb(raw_dst, bundle / "thumb.avif", at_s=min(1.0, duration / 2))
 
             chapter_count = len(clip.chapters) if clip.chapters else 1
             manifest_entries.append({
