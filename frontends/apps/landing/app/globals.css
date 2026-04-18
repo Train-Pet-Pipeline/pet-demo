@@ -1,0 +1,18 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-bg-primary: #FFFCF7;
+  --color-bg-warm: #EDE8E1;
+  --color-accent: #C65D3E;
+  --color-accent-alt: #3A5A40;
+  --color-ink: #1F1A17;
+  --color-ink-muted: rgba(31,26,23,0.65);
+  --font-serif: "Playfair Display Variable", "Playfair Display", Georgia, serif;
+  --font-sans: "Inter Variable", Inter, system-ui, sans-serif;
+  --font-serif-sc: "Noto Serif SC", serif;
+}
+
+html, body { background: var(--color-bg-primary); color: var(--color-ink); }
+body { font-family: var(--font-sans); }
