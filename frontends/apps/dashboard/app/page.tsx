@@ -1,8 +1,33 @@
-export default function DashboardPage() {
+import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
+import { Tabs } from "@/components/Tabs";
+import { OverviewTab } from "@/components/OverviewTab";
+import { ClipsTab } from "@/components/ClipsTab";
+import { BenchmarksTab } from "@/components/BenchmarksTab";
+import { loadNarrativesFromDisk, loadBenchmarksFromDisk } from "@/lib/load-artifacts";
+
+export default async function DashboardPage() {
+  const [narratives, benchmarks] = await Promise.all([
+    loadNarrativesFromDisk(),
+    loadBenchmarksFromDisk(),
+  ]);
+
   return (
-    <main className="mx-auto max-w-6xl px-6 py-10">
-      <h1 className="font-serif text-h1">Purr·AI Dashboard</h1>
-      <p className="mt-2 text-mute">(scaffold — tabs land in Task 16)</p>
-    </main>
+    <>
+      <Header />
+      <main>
+        <Tabs
+          panels={{
+            overview: {
+              label: "Overview",
+              render: () => <OverviewTab narratives={narratives} benchmarks={benchmarks} />,
+            },
+            clips: { label: "Clips", render: () => <ClipsTab narratives={narratives} /> },
+            benchmarks: { label: "Benchmarks", render: () => <BenchmarksTab benchmarks={benchmarks} /> },
+          }}
+        />
+      </main>
+      <Footer />
+    </>
   );
 }
