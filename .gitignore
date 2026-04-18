@@ -28,3 +28,9 @@ frontends/apps/dashboard/public/artifacts/posters/
 
 # superpowers workflow artifacts
 .superpowers/
+
+# M4 video staging (never commit source videos; artifacts live in GH Release)
+videos/raw-doubao/
+videos/raw-shorts/
+videos/raw-real/
+videos/stitched/
