@@ -4,6 +4,7 @@ Kept separate from backend implementations (e.g. mmpose_pose.py) so that
 callers needing only the keypoint name list can import these constants
 without pulling in heavy inference dependencies like mmpose/mmcv.
 """
+
 from __future__ import annotations
 
 AP10K_KPT_NAMES: list[str] = [
