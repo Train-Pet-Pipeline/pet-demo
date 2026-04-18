@@ -22,4 +22,8 @@ describe("load-artifacts", () => {
   it("parseNarratives throws on malformed input", () => {
     expect(() => parseNarratives({ bad: "value" } as unknown as object)).toThrow();
   });
+
+  it("parseBenchmarks throws on malformed input", () => {
+    expect(() => parseBenchmarks({ bad: "value" } as unknown as object)).toThrow();
+  });
 });
