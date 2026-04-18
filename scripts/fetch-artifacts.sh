@@ -26,6 +26,8 @@ if (( TARBALL == 1 )); then
   else
     for archive in "$DEST"/*.tar.gz; do
       [[ -f "$archive" ]] || continue
+      # Clear stale per-slug subdirectories before extracting (preserves DEST root)
+      find "$DEST" -mindepth 1 -maxdepth 1 -type d -exec rm -rf {} +
       tar -xzf "$archive" -C "$DEST"
       rm "$archive"
     done
