@@ -55,3 +55,16 @@ jobs:
           name: playwright-report
           path: frontends/apps/dashboard/playwright-report/
           retention-days: 7
+
+      - run: pnpm -F landing build
+
+      - run: pnpm -F landing exec playwright install --with-deps chromium
+
+      - run: pnpm -F landing test:e2e
+
+      - if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-landing
+          path: frontends/apps/landing/playwright-report/
+          retention-days: 7
