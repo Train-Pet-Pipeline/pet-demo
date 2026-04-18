@@ -24,7 +24,7 @@ export const BenchmarksSchema = z.object({
   pose_ms: z.number(),
   narrative_ms: z.number(),
   pipeline_ms: z.number(),
-  pipeline_mode: z.enum(["parallel", "serial"]),
+  pipeline_mode: z.enum(["parallel", "serial", "fake"]),
   total_frames: z.number().int().nonnegative(),
   total_seconds: z.number().nonnegative(),
 });
