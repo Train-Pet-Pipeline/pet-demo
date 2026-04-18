@@ -27,7 +27,8 @@
       ]
     },
     "allowJs": true,
-    "isolatedModules": true
+    "isolatedModules": true,
+    "types": ["vitest/globals", "@testing-library/jest-dom"]
   },
   "include": [
     "next-env.d.ts",
@@ -37,6 +38,8 @@
   ],
   "exclude": [
     "node_modules",
-    ".next"
+    ".next",
+    "tests/e2e",
+    "playwright.config.ts"
   ]
 }
