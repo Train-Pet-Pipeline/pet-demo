@@ -1,0 +1,7 @@
+const offline = !!process.env.OFFLINE_BUNDLE;
+export default {
+  output: offline ? "export" : undefined,
+  images: { unoptimized: offline },
+  trailingSlash: true,
+  transpilePackages: ["@purrai/ui", "@purrai/theme"],
+};
