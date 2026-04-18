@@ -53,6 +53,72 @@ def sample_narratives(
     output_json.write_text(json.dumps(data, indent=2, ensure_ascii=False))
 
 
+def _uniform_sample_frames(items: list, k: int) -> list:
+    """Pick k items evenly spaced from items. Returns a shallow copy if len<=k."""
+    if len(items) <= k:
+        return list(items)
+    step = len(items) / k
+    return [items[int(i * step)] for i in range(k)]
+
+
+def sample_narratives_windowed(
+    input_video: Path,
+    max_frames: int,
+    fps: float,
+    use_fake_pipeline: bool = False,
+    config_path: Path | None = None,
+    window_frames: int = 60,
+    frames_per_window: int = 6,
+) -> list[dict[str, object]]:
+    """Run narrative backend on sliding, non-overlapping windows of one clip.
+
+    Produces a per-window narrative list suitable for Dashboard's timeline
+    visualization. Unlike sample_narratives (directory in, one-per-file out),
+    this operates on a single video and emits multiple timestamped entries.
+    """
+    if use_fake_pipeline:
+        from offline_bake._fakes import FakeNarr
+
+        narr: object = FakeNarr()
+    else:
+        assert config_path is not None, "config_path required without use_fake_pipeline"
+        cfg = load_config(config_path)
+        from purrai_core.backends.qwen2vl_narrative import Qwen2VLNarrative
+
+        narr = Qwen2VLNarrative(cfg.section("narrative"))
+
+    results: list[dict[str, object]] = []
+    buffer: list[object] = []
+    last_idx = -1
+    for idx, frame in iter_frames(input_video, max_frames):
+        buffer.append(frame)
+        last_idx = idx
+        if len(buffer) >= window_frames:
+            sampled = _uniform_sample_frames(buffer, frames_per_window)
+            out = narr.describe(sampled, [[] for _ in sampled])  # type: ignore[attr-defined]
+            results.append(
+                {
+                    "frame": idx,
+                    "time_s": round(idx / fps, 2) if fps > 0 else 0.0,
+                    "text": out.text,
+                    "confidence": float(out.confidence),
+                }
+            )
+            buffer = []
+    if buffer and len(buffer) >= window_frames // 2 and last_idx >= 0:
+        sampled = _uniform_sample_frames(buffer, frames_per_window)
+        out = narr.describe(sampled, [[] for _ in sampled])  # type: ignore[attr-defined]
+        results.append(
+            {
+                "frame": last_idx,
+                "time_s": round(last_idx / fps, 2) if fps > 0 else 0.0,
+                "text": out.text,
+                "confidence": float(out.confidence),
+            }
+        )
+    return results
+
+
 def main() -> None:
     """CLI entry point for sample_narratives."""
     p = argparse.ArgumentParser(description="Sample narrative VLM output for a clips directory.")
