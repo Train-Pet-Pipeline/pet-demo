@@ -2,6 +2,8 @@
 // and Node (api route) runtimes. HMAC-SHA256 via crypto.subtle, base64url via btoa/atob.
 
 const encoder = new TextEncoder();
+const SECONDS_PER_DAY = 86_400;
+const MIN_SECRET_LENGTH = 32;
 
 function b64urlEncode(bytes: Uint8Array): string {
   let binary = "";
@@ -37,7 +39,7 @@ function timingSafeEqual(a: Uint8Array, b: Uint8Array): boolean {
 }
 
 export async function signSession(ttlDays: number, secret: string): Promise<string> {
-  const expSec = Math.floor(Date.now() / 1000) + ttlDays * 86_400;
+  const expSec = Math.floor(Date.now() / 1000) + ttlDays * SECONDS_PER_DAY;
   const expPart = b64urlEncode(encoder.encode(String(expSec)));
   const mac = await hmacSha256(secret, expPart);
   return `${expPart}.${b64urlEncode(mac)}`;
@@ -57,12 +59,21 @@ export async function verifySession(
     return { valid: false, reason: "bad-b64" };
   }
   if (!timingSafeEqual(received, expected)) return { valid: false, reason: "hmac-mismatch" };
-  const expSec = parseInt(new TextDecoder().decode(b64urlDecode(expPart)), 10);
+  let expBytes: Uint8Array;
+  try {
+    expBytes = b64urlDecode(expPart);
+  } catch {
+    return { valid: false, reason: "bad-exp" };
+  }
+  const expSec = parseInt(new TextDecoder().decode(expBytes), 10);
   if (!Number.isFinite(expSec)) return { valid: false, reason: "bad-exp" };
   if (expSec <= Math.floor(Date.now() / 1000)) return { valid: false, reason: "expired" };
   return { valid: true, exp: expSec };
 }
 
+// NOTE: byte-length of `a` and `b` is observable to a timing attacker (we early-return
+// on length mismatch). For password comparison at current scope this is acceptable; if
+// callers need length-opaque compare, pre-hash both sides to equal-length digests first.
 // Timing-safe password compare (byte-level; strings up to ~1KB are fine at this scale).
 export function timingSafeEqualString(a: string, b: string): boolean {
   const ab = encoder.encode(a);
@@ -94,8 +105,8 @@ export function _resetRateLimitForTests(): void {
 
 export function requireAuthSecret(): string {
   const s = process.env.DASHBOARD_AUTH_SECRET;
-  if (!s || s.length < 32) {
-    throw new Error("DASHBOARD_AUTH_SECRET must be set and >=32 chars");
+  if (!s || s.length < MIN_SECRET_LENGTH) {
+    throw new Error(`DASHBOARD_AUTH_SECRET must be set and >=${MIN_SECRET_LENGTH} chars`);
   }
   return s;
 }

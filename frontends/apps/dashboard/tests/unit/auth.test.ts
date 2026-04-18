@@ -22,6 +22,13 @@ describe("signSession / verifySession (Web Crypto HMAC)", () => {
     expect((await verifySession("bad.bad.extra", SECRET)).valid).toBe(false);
   });
 
+  it("returns {valid:false} on cookie whose expPart is not valid base64", async () => {
+    // The expPart ("!!!") is 2-part so it passes the split guard and survives HMAC,
+    // but atob throws InvalidCharacterError inside b64urlDecode. Must not propagate.
+    const result = await verifySession("!!!.!!!", SECRET);
+    expect(result.valid).toBe(false);
+  });
+
   it("rejects an expired cookie", async () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date("2026-04-17T00:00:00Z"));
