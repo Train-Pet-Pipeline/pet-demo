@@ -10,7 +10,7 @@ test("login redirect + three tabs render", async ({ page }) => {
 
   await expect(page.locator("text=Purr·AI").first()).toBeVisible();
 
-  await expect(page.getByText("FPS")).toBeVisible();
+  await expect(page.getByText("FPS").first()).toBeVisible();
 
   await page.click("button:has-text('Clips')");
   await expect(page.locator("text=猫·饮水行为").first()).toBeVisible();
