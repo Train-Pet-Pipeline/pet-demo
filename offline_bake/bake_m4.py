@@ -122,9 +122,11 @@ def _build_real_vlm_call(pipeline: FullPipeline) -> Callable[[str, float, float]
 
     def vlm_call(video_path: str, start: float, end: float) -> tuple[str, float]:
         cap = cv2.VideoCapture(video_path)
-        cap.set(cv2.CAP_PROP_POS_MSEC, ((start + end) / 2) * 1000)
-        ok, frame = cap.read()
-        cap.release()
+        try:
+            cap.set(cv2.CAP_PROP_POS_MSEC, ((start + end) / 2) * 1000)
+            ok, frame = cap.read()
+        finally:
+            cap.release()
         if not ok:
             return ("", 0.0)
         out = pipeline.narrative.describe([frame], tracks_hist=[])
@@ -157,7 +159,7 @@ def bake_m4_from_yaml(
         pipeline = _build_real_pipeline(cfg)
         vlm_call = _build_real_vlm_call(pipeline)
 
-    manifest_entries: list[dict] = []
+    clips_info: list[dict] = []
     try:
         for clip in clips:
             bundle = out_dir / clip.slug
@@ -185,7 +187,7 @@ def bake_m4_from_yaml(
             _extract_thumb(raw_dst, bundle / "thumb.avif", at_s=min(1.0, duration / 2))
 
             chapter_count = len(clip.chapters) if clip.chapters else 1
-            manifest_entries.append({
+            clips_info.append({
                 "slug": clip.slug,
                 "title": clip.title,
                 "source": clip.source,
@@ -197,12 +199,11 @@ def bake_m4_from_yaml(
             })
     finally:
         pipeline.shutdown()
-
-    manifest = {
-        "version": "0.4.0",
-        "generated_at": datetime.datetime.now(datetime.timezone.utc).isoformat().replace(
-            "+00:00", "Z"
-        ),
-        "clips": manifest_entries,
-    }
-    (out_dir / "manifest.json").write_text(json.dumps(manifest, indent=2))
+        manifest = {
+            "version": "0.4.0",
+            "generated_at": datetime.datetime.now(datetime.timezone.utc).isoformat().replace(
+                "+00:00", "Z"
+            ),
+            "clips": clips_info,
+        }
+        (out_dir / "manifest.json").write_text(json.dumps(manifest, indent=2))
