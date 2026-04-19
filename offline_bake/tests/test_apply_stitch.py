@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 import json
-import subprocess
-import sys
 from pathlib import Path
+
+from offline_bake.apply_stitch import main
 
 
 def _write_fixture(bundle: Path) -> None:
@@ -37,14 +37,12 @@ def _write_fixture(bundle: Path) -> None:
 
 
 def test_apply_stitch_writes_stitched_tracks(tmp_path: Path) -> None:
+    """CLI main() stitches tracks and writes tracks.stitched.json."""
     bundle = tmp_path / "fake-slug"
     _write_fixture(bundle)
 
-    subprocess.run(
-        [sys.executable, "-m", "offline_bake.apply_stitch", "--bundle", str(bundle)],
-        check=True,
-        capture_output=True,
-    )
+    rc = main(["--bundle", str(bundle)])
+    assert rc == 0
 
     out = json.loads((bundle / "tracks.stitched.json").read_text())
     # All track ids should collapse to 1 after stitch
@@ -56,6 +54,7 @@ def test_apply_stitch_writes_stitched_tracks(tmp_path: Path) -> None:
 
 
 def test_apply_stitch_missing_reids_is_noop(tmp_path: Path) -> None:
+    """CLI returns non-zero exit and writes no output when reids.json absent."""
     bundle = tmp_path / "fake-slug"
     bundle.mkdir()
     tracks = {
@@ -67,9 +66,6 @@ def test_apply_stitch_missing_reids_is_noop(tmp_path: Path) -> None:
     (bundle / "tracks.json").write_text(json.dumps(tracks))
     # No reids.json
 
-    r = subprocess.run(
-        [sys.executable, "-m", "offline_bake.apply_stitch", "--bundle", str(bundle)],
-        capture_output=True,
-    )
-    assert r.returncode != 0  # CLI reports error
+    rc = main(["--bundle", str(bundle)])
+    assert rc != 0  # CLI reports error
     assert not (bundle / "tracks.stitched.json").exists()
