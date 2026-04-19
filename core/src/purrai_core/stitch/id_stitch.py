@@ -14,7 +14,7 @@ import math
 from collections.abc import Sequence
 
 import numpy as np
-from scipy.optimize import linear_sum_assignment
+from scipy.optimize import linear_sum_assignment  # type: ignore[import-untyped]
 
 from purrai_core.types import Track
 
@@ -58,7 +58,8 @@ def _pool_window(
             vecs.append(emb_map[track_id])
     if not vecs:
         return None
-    return np.mean(np.asarray(vecs, dtype=np.float64), axis=0)
+    result: np.ndarray = np.mean(np.asarray(vecs, dtype=np.float64), axis=0)
+    return result
 
 
 def stitch_tracks(
@@ -111,12 +112,12 @@ def stitch_tracks(
     pool_death: dict[int, np.ndarray] = {}
     pool_birth: dict[int, np.ndarray] = {}
     for tid in ids:
-        d = _pool_window(emb_by_frame, tid, last_frame[tid], "backward", embedding_window)
-        b = _pool_window(emb_by_frame, tid, first_frame[tid], "forward", embedding_window)
-        if d is not None:
-            pool_death[tid] = d
-        if b is not None:
-            pool_birth[tid] = b
+        emb_death = _pool_window(emb_by_frame, tid, last_frame[tid], "backward", embedding_window)
+        emb_birth = _pool_window(emb_by_frame, tid, first_frame[tid], "forward", embedding_window)
+        if emb_death is not None:
+            pool_death[tid] = emb_death
+        if emb_birth is not None:
+            pool_birth[tid] = emb_birth
 
     # ----- 4. Candidate pairs (death d, birth b) where b starts after d ends -----
     deaths = [tid for tid in ids if tid in pool_death]
@@ -149,6 +150,7 @@ def stitch_tracks(
 
     rewrite: dict[int, int] = {}  # birth_id -> death_id
     for i, j in zip(row_ind, col_ind, strict=False):
+        i, j = int(i), int(j)
         if not math.isfinite(cost[i, j]):
             continue
         d = deaths[i]
