@@ -51,6 +51,12 @@ pipeline:
   vlm_trigger_on_detection_change: true
   parallel_reid_pose: true
 
+# ---- Render-time id stitch (M5) ----
+stitch:
+  cosine_threshold: 0.7     # OSNet 常用 0.65-0.75; 保守默认
+  max_gap_frames: 90        # 3s @ 30fps
+  embedding_window: 5       # 死亡/新生端各取 K 帧均值
+
 # ---- Logging ----
 logging:
   level: "INFO"
