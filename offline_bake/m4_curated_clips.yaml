@@ -1,0 +1,16 @@
+# M4 Playground curated clip library (2 clips, 8s each).
+# Two-panel playground: one AI-generated scene + one real-footage stress test.
+# offline_bake/bake_m4.py reads this.
+version: "0.4.0"
+clips:
+  - slug: playful-jump
+    source_mp4: videos/raw-shorts/playful-jump.mp4
+    source: ai_generated
+    title: "玩耍起跳"
+    tags: [daily, baseline]
+
+  - slug: real-footage-6s
+    source_mp4: videos/raw-real/real-footage-6s.mp4
+    source: real_footage
+    title: "真实素材 · 前 6 秒"
+    tags: [unscripted, multi-cat]

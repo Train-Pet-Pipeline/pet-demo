@@ -13,7 +13,12 @@ build/
 .env.local
 bake_out/
 offline_bake/assets_out/
+artifacts-out/
 models_cache/
+# Ultralytics auto-downloads model weights to the invocation cwd.
+*.pt
+# mmpose configs symlink (operator convenience, resolves into pet-pipeline env site-packages).
+/configs
 wandb/
 
 # frontends
@@ -28,3 +33,9 @@ frontends/apps/dashboard/public/artifacts/posters/
 
 # superpowers workflow artifacts
 .superpowers/
+
+# M4 video staging (never commit source videos; artifacts live in GH Release)
+videos/raw-doubao/
+videos/raw-shorts/
+videos/raw-real/
+videos/stitched/

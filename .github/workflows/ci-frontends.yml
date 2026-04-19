@@ -68,3 +68,20 @@ jobs:
           name: playwright-report-landing
           path: frontends/apps/landing/playwright-report/
           retention-days: 7
+
+      - run: pnpm -F playground lint
+
+      - run: pnpm -F playground typecheck
+
+      - run: pnpm -F playground test
+
+      - run: pnpm -F playground exec playwright install chromium
+
+      - run: pnpm -F playground test:e2e
+
+      - if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-playground
+          path: frontends/apps/playground/playwright-report/
+          retention-days: 7

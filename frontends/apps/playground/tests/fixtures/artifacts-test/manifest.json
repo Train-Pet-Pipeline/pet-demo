@@ -1,0 +1,56 @@
+{
+  "version": "test",
+  "generated_at": "2026-04-18T14:36:09.714Z",
+  "clips": [
+    {
+      "slug": "fixture-ai-1",
+      "title": "Fixture AI 1",
+      "source": "ai_generated",
+      "duration_s": 2,
+      "chapter_count": 2,
+      "width": 320,
+      "height": 240,
+      "tags": []
+    },
+    {
+      "slug": "fixture-ai-2",
+      "title": "Fixture AI 2",
+      "source": "ai_generated",
+      "duration_s": 2,
+      "chapter_count": 1,
+      "width": 320,
+      "height": 240,
+      "tags": []
+    },
+    {
+      "slug": "fixture-ai-3",
+      "title": "Fixture AI 3",
+      "source": "ai_generated",
+      "duration_s": 2,
+      "chapter_count": 1,
+      "width": 320,
+      "height": 240,
+      "tags": []
+    },
+    {
+      "slug": "fixture-ai-4",
+      "title": "Fixture AI 4",
+      "source": "ai_generated",
+      "duration_s": 2,
+      "chapter_count": 1,
+      "width": 320,
+      "height": 240,
+      "tags": []
+    },
+    {
+      "slug": "fixture-real",
+      "title": "Fixture real",
+      "source": "real_footage",
+      "duration_s": 2,
+      "chapter_count": 1,
+      "width": 320,
+      "height": 240,
+      "tags": []
+    }
+  ]
+}
