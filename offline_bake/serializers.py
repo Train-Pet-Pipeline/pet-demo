@@ -8,7 +8,7 @@ from __future__ import annotations
 from typing import Iterable
 
 from purrai_core.backends.pose_schema import AP10K_KPT_NAMES
-from purrai_core.types import PoseResult, Track
+from purrai_core.types import PoseResult, ReidEmbedding, Track
 
 
 def _bbox_xywh(t: Track) -> list[int]:
@@ -47,6 +47,29 @@ def serialize_tracks(
             for t, tracks in sorted_frames
         ],
     }
+
+
+def serialize_reids(
+    frames: Iterable[tuple[int, list["ReidEmbedding"]]], *, fps: int
+) -> dict:
+    """Serialize per-frame reid output into ReidsManifest JSON shape.
+
+    Args:
+        frames: Iterable of (frame_idx, list[ReidEmbedding]).
+        fps: Canonical frames-per-second for the source video.
+
+    Returns:
+        dict {"fps", "frames":[{"frame_idx", "embeddings":{str(track_id): [float, ...]}}]}.
+        JSON object keys are strings per JSON spec; parse_reids coerces back to int.
+    """
+    out_frames = []
+    for frame_idx, embs in frames:
+        emb_map = {
+            str(e.track_id): [round(float(x), 6) for x in e.vector]
+            for e in embs
+        }
+        out_frames.append({"frame_idx": int(frame_idx), "embeddings": emb_map})
+    return {"fps": fps, "frames": out_frames}
 
 
 def _kpt_row(kp) -> list[float]:
