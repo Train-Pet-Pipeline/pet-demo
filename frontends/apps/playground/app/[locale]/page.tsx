@@ -1,9 +1,15 @@
-// app/page.tsx
+// app/[locale]/page.tsx
 import { promises as fs } from "node:fs";
 import path from "node:path";
+import { unstable_setRequestLocale } from "next-intl/server";
 import { ClipCard } from "@/components/ClipCard";
 import { PaginationCTA } from "@/components/PaginationCTA";
 import { parseManifestOrEmpty } from "@/lib/artifacts";
+import { locales } from "../../i18n";
+
+export function generateStaticParams() {
+  return locales.map((locale) => ({ locale }));
+}
 
 async function loadManifest() {
   return parseManifestOrEmpty(async () => {
@@ -13,7 +19,8 @@ async function loadManifest() {
   });
 }
 
-export default async function Page() {
+export default async function Page({ params: { locale } }: { params: { locale: string } }) {
+  unstable_setRequestLocale(locale);
   const { clips } = await loadManifest();
   const aiClips = clips.filter((c) => c.source === "ai_generated");
   if (aiClips.length === 0) {

@@ -1,0 +1,27 @@
+{
+  "nav": {
+    "gallery": "画廊",
+    "back": "返回",
+    "viewDetail": "查看详情"
+  },
+  "layers": {
+    "title": "图层",
+    "tracks": "跟踪框",
+    "poses": "骨架",
+    "narratives": "旁白"
+  },
+  "chapters": {
+    "title": "章节",
+    "label": "章节 {n}"
+  },
+  "narrative": {
+    "title": "叙事"
+  },
+  "state": {
+    "loading": "加载中",
+    "empty": "artifacts 未就绪"
+  },
+  "badges": {
+    "realFootage": "真实拍摄片段 · 模型未预设"
+  }
+}
