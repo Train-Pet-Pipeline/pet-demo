@@ -2,7 +2,7 @@
 import { promises as fs } from "node:fs";
 import path from "node:path";
 import { notFound } from "next/navigation";
-import { parseManifestOrEmpty } from "@/lib/artifacts";
+import { parseManifestOrEmpty, loadTracks } from "@/lib/artifacts";
 import { ClipViewer } from "@/components/ClipViewer";
 
 interface NarrativeChapter { start: number; end: number; text: string; confidence: number; }
@@ -26,7 +26,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
   if (!clip) notFound();
   const dir = path.join(base, params.slug);
   const [tracks, poses, narratives] = await Promise.all([
-    readJson<{ fps: number; frames: { t: number; tracks: { id: number; bbox: number[]; score: number }[] }[] }>(path.join(dir, "tracks.json")),
+    loadTracks(dir),
     readJson<{ fps: number; schema: string; frames: { t: number; poses: { id: number; keypoints: number[][] }[] }[] }>(path.join(dir, "poses.json")),
     readJson<NarrativesFile>(path.join(dir, "narratives.json")),
   ]);

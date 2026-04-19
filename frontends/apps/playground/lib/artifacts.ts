@@ -1,4 +1,6 @@
 // lib/artifacts.ts
+import { promises as fs } from "node:fs";
+import path from "node:path";
 import { z } from "zod";
 
 export const clipManifestSchema = z.object({
@@ -23,7 +25,7 @@ export type Manifest = z.infer<typeof manifestSchema>;
 
 // Tracks schema — exercised in PR3
 export const trackEntrySchema = z.object({
-  id: z.string(),
+  id: z.number().int(),     // was z.string() — mismatch with serialize_tracks int output
   bbox: z.tuple([z.number(), z.number(), z.number(), z.number()]),
   score: z.number(),
 });
@@ -39,7 +41,7 @@ export type TracksFile = z.infer<typeof tracksFileSchema>;
 
 // Poses schema — exercised in PR3
 export const poseEntrySchema = z.object({
-  id: z.string(),
+  id: z.number().int(),
   keypoints: z.array(z.tuple([z.number(), z.number(), z.number()])),
 });
 export const posesFrameSchema = z.object({
@@ -65,6 +67,19 @@ export const narrativesFileSchema = z.object({
   chapters: z.array(narrativeChapterSchema),
 });
 export type NarrativesFile = z.infer<typeof narrativesFileSchema>;
+
+export async function loadTracks(dir: string): Promise<TracksFile> {
+  const stitchedPath = path.join(dir, "tracks.stitched.json");
+  const plainPath = path.join(dir, "tracks.json");
+  try {
+    const raw = await fs.readFile(stitchedPath, "utf-8");
+    return tracksFileSchema.parse(JSON.parse(raw));
+  } catch (err: unknown) {
+    if ((err as NodeJS.ErrnoException)?.code !== "ENOENT") throw err;
+  }
+  const raw = await fs.readFile(plainPath, "utf-8");
+  return tracksFileSchema.parse(JSON.parse(raw));
+}
 
 export async function parseManifestOrEmpty(
   load: () => Promise<unknown>,
