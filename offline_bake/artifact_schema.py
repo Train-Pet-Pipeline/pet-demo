@@ -157,6 +157,39 @@ class M4ClipManifest:
     tags: List[str]
 
 
+# ---------------------------------------------------------------------------
+# M5 reid-stitch dataclasses
+# ---------------------------------------------------------------------------
+
+
+@dataclass(frozen=True)
+class ReidFrame:
+    """Per-frame reid embeddings keyed by track_id."""
+
+    frame_idx: int
+    embeddings: dict[int, List[float]]  # track_id -> embedding vector
+
+
+@dataclass(frozen=True)
+class ReidsManifest:
+    """Full per-frame reid embeddings for a clip."""
+
+    fps: int
+    frames: List[ReidFrame]
+
+
+def parse_reids(payload: dict) -> ReidsManifest:
+    """Parse a reids JSON payload. Coerces JSON's string keys to int track_ids."""
+    frames = [
+        ReidFrame(
+            frame_idx=int(f["frame_idx"]),
+            embeddings={int(k): list(v) for k, v in f["embeddings"].items()},
+        )
+        for f in payload["frames"]
+    ]
+    return ReidsManifest(fps=int(payload["fps"]), frames=frames)
+
+
 def parse_tracks(payload: dict) -> TracksManifest:
     """Parse a tracks JSON payload into a TracksManifest."""
     return dacite.from_dict(TracksManifest, payload)
