@@ -58,9 +58,12 @@ def test_apply_stitch_writes_stitched_tracks(tmp_path: Path) -> None:
 def test_apply_stitch_missing_reids_is_noop(tmp_path: Path) -> None:
     bundle = tmp_path / "fake-slug"
     bundle.mkdir()
-    tracks = {"fps": 25, "frames": [
-        {"t": 0.0, "tracks": [{"id": 1, "bbox": [0, 0, 10, 10], "score": 0.9}]},
-    ]}
+    tracks = {
+        "fps": 25,
+        "frames": [
+            {"t": 0.0, "tracks": [{"id": 1, "bbox": [0, 0, 10, 10], "score": 0.9}]},
+        ],
+    }
     (bundle / "tracks.json").write_text(json.dumps(tracks))
     # No reids.json
 

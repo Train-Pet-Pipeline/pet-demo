@@ -1,4 +1,4 @@
-from offline_bake.artifact_schema import ReidFrame, parse_reids, ReidsManifest
+from offline_bake.artifact_schema import parse_reids
 
 
 def test_reid_frame_typeddict_round_trip():
@@ -19,5 +19,6 @@ def test_reid_frame_typeddict_round_trip():
 
 def test_parse_reids_rejects_malformed():
     import pytest
-    with pytest.raises(Exception):
+
+    with pytest.raises(KeyError):
         parse_reids({"fps": 25})  # missing "frames"

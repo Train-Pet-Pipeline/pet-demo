@@ -3,9 +3,10 @@
 Converts purrai_core outputs (list[Track], list[PoseResult]) into dict payloads
 whose shape matches offline_bake.artifact_schema.TracksManifest / PosesManifest.
 """
+
 from __future__ import annotations
 
-from typing import Iterable
+from collections.abc import Iterable
 
 from purrai_core.backends.pose_schema import AP10K_KPT_NAMES
 from purrai_core.types import PoseResult, ReidEmbedding, Track
@@ -19,9 +20,7 @@ def _bbox_xywh(t: Track) -> list[int]:
     return [x, y, w, h]
 
 
-def serialize_tracks(
-    frames: Iterable[tuple[float, list[Track]]], *, fps: int
-) -> dict:
+def serialize_tracks(frames: Iterable[tuple[float, list[Track]]], *, fps: int) -> dict:
     """Serialize per-frame tracker output into TracksManifest JSON shape.
 
     Args:
@@ -39,8 +38,7 @@ def serialize_tracks(
             {
                 "t": round(t, 4),
                 "tracks": [
-                    {"id": tr.track_id, "bbox": _bbox_xywh(tr),
-                     "score": round(float(tr.score), 4)}
+                    {"id": tr.track_id, "bbox": _bbox_xywh(tr), "score": round(float(tr.score), 4)}
                     for tr in tracks
                 ],
             }
@@ -49,9 +47,7 @@ def serialize_tracks(
     }
 
 
-def serialize_reids(
-    frames: Iterable[tuple[int, list["ReidEmbedding"]]], *, fps: int
-) -> dict:
+def serialize_reids(frames: Iterable[tuple[int, list[ReidEmbedding]]], *, fps: int) -> dict:
     """Serialize per-frame reid output into ReidsManifest JSON shape.
 
     Args:
@@ -64,10 +60,7 @@ def serialize_reids(
     """
     out_frames = []
     for frame_idx, embs in frames:
-        emb_map = {
-            str(e.track_id): [round(float(x), 6) for x in e.vector]
-            for e in embs
-        }
+        emb_map = {str(e.track_id): [round(float(x), 6) for x in e.vector] for e in embs}
         out_frames.append({"frame_idx": int(frame_idx), "embeddings": emb_map})
     return {"fps": fps, "frames": out_frames}
 
@@ -76,9 +69,7 @@ def _kpt_row(kp) -> list[float]:
     return [round(float(kp.x), 3), round(float(kp.y), 3), round(float(kp.score), 4)]
 
 
-def serialize_poses(
-    frames: Iterable[tuple[float, list[PoseResult]]], *, fps: int
-) -> dict:
+def serialize_poses(frames: Iterable[tuple[float, list[PoseResult]]], *, fps: int) -> dict:
     """Serialize per-frame pose output into PosesManifest JSON shape.
 
     Keypoints are emitted in canonical AP-10K 17-keypoint order. Missing

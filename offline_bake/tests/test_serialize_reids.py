@@ -1,4 +1,5 @@
 from purrai_core.types import ReidEmbedding
+
 from offline_bake.serializers import serialize_reids
 
 
@@ -8,10 +9,15 @@ def test_serialize_reids_empty_frames():
 
 
 def test_serialize_reids_single_frame_two_tracks():
-    frames = [(0, [
-        ReidEmbedding(track_id=1, vector=(0.1, 0.2, 0.3)),
-        ReidEmbedding(track_id=2, vector=(0.9, 0.8, 0.7)),
-    ])]
+    frames = [
+        (
+            0,
+            [
+                ReidEmbedding(track_id=1, vector=(0.1, 0.2, 0.3)),
+                ReidEmbedding(track_id=2, vector=(0.9, 0.8, 0.7)),
+            ],
+        )
+    ]
     result = serialize_reids(frames, fps=25)
     assert result["fps"] == 25
     assert len(result["frames"]) == 1

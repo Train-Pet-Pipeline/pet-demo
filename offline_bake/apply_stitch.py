@@ -3,6 +3,7 @@
 Reads tracks.json + reids.json from --bundle dir, writes tracks.stitched.json.
 Both consumers (this CLI and bake_m4) call the same pure function.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -12,7 +13,6 @@ import sys
 from pathlib import Path
 
 import yaml
-
 from purrai_core.stitch import stitch_tracks
 from purrai_core.types import BBox, Track
 
@@ -30,13 +30,15 @@ def _load_tracks(path: Path) -> tuple[int, list[tuple[int, list[Track]]]]:
         trs: list[Track] = []
         for entry in frame["tracks"]:
             bx, by, bw, bh = entry["bbox"]
-            trs.append(Track(
-                track_id=int(entry["id"]),
-                bbox=BBox(float(bx), float(by), float(bx + bw), float(by + bh)),
-                score=float(entry["score"]),
-                class_id=0,
-                class_name="",
-            ))
+            trs.append(
+                Track(
+                    track_id=int(entry["id"]),
+                    bbox=BBox(float(bx), float(by), float(bx + bw), float(by + bh)),
+                    score=float(entry["score"]),
+                    class_id=0,
+                    class_name="",
+                )
+            )
         out.append((frame_idx, trs))
     return fps, out
 
@@ -50,28 +52,29 @@ def _load_reids(path: Path) -> list[tuple[int, dict[int, list[float]]]]:
     ]
 
 
-def _dump_tracks(
-    fps: int, stitched: list[tuple[int, list[Track]]], path: Path
-) -> None:
+def _dump_tracks(fps: int, stitched: list[tuple[int, list[Track]]], path: Path) -> None:
     """Dump stitched tracks back to the same shape as tracks.json."""
     frames = []
     for frame_idx, trs in stitched:
         t = round(frame_idx / fps, 4)
-        frames.append({
-            "t": t,
-            "tracks": [
-                {
-                    "id": tr.track_id,
-                    "bbox": [
-                        int(round(tr.bbox.x1)), int(round(tr.bbox.y1)),
-                        int(round(tr.bbox.x2 - tr.bbox.x1)),
-                        int(round(tr.bbox.y2 - tr.bbox.y1)),
-                    ],
-                    "score": round(tr.score, 4),
-                }
-                for tr in trs
-            ],
-        })
+        frames.append(
+            {
+                "t": t,
+                "tracks": [
+                    {
+                        "id": tr.track_id,
+                        "bbox": [
+                            int(round(tr.bbox.x1)),
+                            int(round(tr.bbox.y1)),
+                            int(round(tr.bbox.x2 - tr.bbox.x1)),
+                            int(round(tr.bbox.y2 - tr.bbox.y1)),
+                        ],
+                        "score": round(tr.score, 4),
+                    }
+                    for tr in trs
+                ],
+            }
+        )
     path.write_text(json.dumps({"fps": fps, "frames": frames}))
 
 
@@ -88,12 +91,20 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         prog="python -m offline_bake.apply_stitch",
         description="Post-process an existing bundle's tracks.json + reids.json "
-                    "into tracks.stitched.json using render-time id stitching.",
+        "into tracks.stitched.json using render-time id stitching.",
     )
-    parser.add_argument("--bundle", type=Path, required=True,
-                        help="Bundle dir containing tracks.json and reids.json")
-    parser.add_argument("--params", type=Path, default=Path("core/params.yaml"),
-                        help="Path to params.yaml (reads stitch.* section)")
+    parser.add_argument(
+        "--bundle",
+        type=Path,
+        required=True,
+        help="Bundle dir containing tracks.json and reids.json",
+    )
+    parser.add_argument(
+        "--params",
+        type=Path,
+        default=Path("core/params.yaml"),
+        help="Path to params.yaml (reads stitch.* section)",
+    )
     args = parser.parse_args(argv)
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 
@@ -111,7 +122,8 @@ def main(argv: list[str] | None = None) -> int:
     cfg = _load_stitch_cfg(args.params)
 
     stitched = stitch_tracks(
-        tracks, reids,
+        tracks,
+        reids,
         cosine_threshold=float(cfg["cosine_threshold"]),
         max_gap_frames=int(cfg["max_gap_frames"]),
         embedding_window=int(cfg["embedding_window"]),
