@@ -1,4 +1,9 @@
 {
+  "meta": {
+    "title": "Purr·AI · 端侧多模态宠物理解",
+    "description": "听懂每一声咕噜、低吟、呼吸。只在你家里运行的端侧 VLM 流水线。",
+    "ogImage": "/og/purrai-og.jpg"
+  },
   "comingSoon": {
     "wordmark": "Purr·AI",
     "tagline": "听懂每一声咕噜、低吟、呼吸。",

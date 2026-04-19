@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages, unstable_setRequestLocale } from "next-intl/server";
 import { locales } from "../../i18n";
+import { LanguageSwitcher } from "../../components/LanguageSwitcher";
 import "@purrai/theme/fonts";
 import "../globals.css";
 
@@ -24,6 +25,7 @@ export default async function LocaleLayout({
     <html lang={locale}>
       <body>
         <NextIntlClientProvider locale={locale} messages={messages}>
+          <LanguageSwitcher />
           {children}
         </NextIntlClientProvider>
       </body>
