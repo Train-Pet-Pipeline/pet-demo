@@ -10,6 +10,7 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:e2e": "playwright test",
+    "perf": "pnpm build && lhci autorun --config=./lhci.config.cjs",
     "clean": "rm -rf .next out .turbo coverage",
     "gen:og": "node scripts/gen-og.mjs"
   },
@@ -38,6 +39,8 @@
     "postcss": "8.4.38",
     "tailwindcss": "3.4.3",
     "sharp": "0.33.4",
-    "vitest": "1.5.0"
+    "vitest": "1.5.0",
+    "@lhci/cli": "0.14.0",
+    "@axe-core/playwright": "4.9.1"
   }
 }
