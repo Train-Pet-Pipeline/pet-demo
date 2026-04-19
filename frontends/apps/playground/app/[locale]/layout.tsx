@@ -1,8 +1,17 @@
 // app/[locale]/layout.tsx
+import type { Metadata } from "next";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages, unstable_setRequestLocale } from "next-intl/server";
 import { locales } from "../../i18n";
 import "../globals.css";
+
+export const metadata: Metadata = {
+  title: {
+    default: "Purrai Playground",
+    template: "%s | Purrai Playground",
+  },
+  description: "AI pet health pipeline — detect · track · re-id · pose · narrate",
+};
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));

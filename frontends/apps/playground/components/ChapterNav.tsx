@@ -30,7 +30,7 @@ export function ChapterNav({ chapters, currentIdx, onJump }: Props) {
           }`}
         >
           <span className="font-medium">章节 {i + 1}</span>
-          <span className="ml-2 text-ink/50 text-xs">{fmt(ch.start)}–{fmt(ch.end)}</span>
+          <span className="ml-2 text-ink/70 text-xs">{fmt(ch.start)}–{fmt(ch.end)}</span>
         </button>
       ))}
     </div>
