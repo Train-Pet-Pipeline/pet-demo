@@ -13,7 +13,12 @@ build/
 .env.local
 bake_out/
 offline_bake/assets_out/
+artifacts-out/
 models_cache/
+# Ultralytics auto-downloads model weights to the invocation cwd.
+*.pt
+# mmpose configs symlink (operator convenience, resolves into pet-pipeline env site-packages).
+/configs
 wandb/
 
 # frontends

@@ -33,7 +33,12 @@ class Qwen2VLNarrative(NarrativeGenerator):
         self.model = Qwen2VLForConditionalGeneration.from_pretrained(
             str(cfg["model_id"]), torch_dtype=dtype, device_map=self.device
         )
-        self.processor = AutoProcessor.from_pretrained(str(cfg["model_id"]))
+        processor_kwargs: dict[str, Any] = {}
+        if "min_pixels" in cfg:
+            processor_kwargs["min_pixels"] = int(cfg["min_pixels"])
+        if "max_pixels" in cfg:
+            processor_kwargs["max_pixels"] = int(cfg["max_pixels"])
+        self.processor = AutoProcessor.from_pretrained(str(cfg["model_id"]), **processor_kwargs)
         self.max_new_tokens = int(cfg["max_new_tokens"])
         self.temperature = float(cfg["temperature"])
         self.system_prompt = str(cfg["system_prompt"])
@@ -45,34 +50,30 @@ class Qwen2VLNarrative(NarrativeGenerator):
     ) -> NarrativeOutput:
         """Generate a natural-language description of the pet state.
 
-        Picks the middle frame as a representative image (power-conscious: avoids
-        running VLM on every frame), converts BGR→RGB, and runs inference.
+        Feeds all provided frames as a multi-image prompt so Qwen2-VL sees
+        temporal context (e.g., begin/middle/end of a chapter), not just one
+        instant. Callers control cost by limiting how many frames they pass.
 
         Args:
-            frames: List of BGR frames as uint8 numpy arrays.
+            frames: List of BGR frames as uint8 numpy arrays. All are shown
+                to the model in order.
             tracks_history: Per-frame track lists (unused by this backend but
                 required by the NarrativeGenerator interface).
 
         Returns:
             NarrativeOutput with generated text and backend metadata.
         """
-        # Pick middle frame as representative
-        mid = frames[len(frames) // 2]
-        image = Image.fromarray(mid[..., ::-1])  # BGR → RGB
+        images = [Image.fromarray(f[..., ::-1]) for f in frames]  # BGR → RGB
+        content: list[dict] = [{"type": "image"} for _ in images]
+        content.append({"type": "text", "text": "请描述这只宠物的状态。"})
         messages = [
             {"role": "system", "content": self.system_prompt},
-            {
-                "role": "user",
-                "content": [
-                    {"type": "image"},
-                    {"type": "text", "text": "请描述这只宠物的状态。"},
-                ],
-            },
+            {"role": "user", "content": content},
         ]
         text = self.processor.apply_chat_template(
             messages, tokenize=False, add_generation_prompt=True
         )
-        inputs = self.processor(text=[text], images=[image], return_tensors="pt").to(self.device)
+        inputs = self.processor(text=[text], images=images, return_tensors="pt").to(self.device)
         with torch.no_grad():
             out_ids = self.model.generate(
                 **inputs,
@@ -82,4 +83,5 @@ class Qwen2VLNarrative(NarrativeGenerator):
         output_text = self.processor.batch_decode(
             out_ids[:, inputs.input_ids.shape[1] :], skip_special_tokens=True
         )[0].strip()
-        return NarrativeOutput(text=output_text, confidence=None, meta={"backend": "qwen2-vl-2b"})
+        meta = {"backend": "qwen2-vl-2b", "num_frames": len(frames)}
+        return NarrativeOutput(text=output_text, confidence=None, meta=meta)

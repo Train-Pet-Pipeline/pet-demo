@@ -115,21 +115,32 @@ def _run_pipeline_over_video(
     return track_frames, pose_frames
 
 
+VLM_FRAMES_PER_CHAPTER = 3
+
+
 def _build_real_vlm_call(pipeline: FullPipeline) -> Callable[[str, float, float], tuple[str, float]]:
-    """Build a per-chapter VLM call that snapshots a mid-chapter frame and invokes
-    the pipeline's NarrativeGenerator (`describe(frames, tracks_hist)`)."""
+    """Build a per-chapter VLM call that samples VLM_FRAMES_PER_CHAPTER frames
+    evenly across [start, end] and invokes the pipeline's NarrativeGenerator
+    with all of them so the model sees temporal progression."""
     import cv2
 
     def vlm_call(video_path: str, start: float, end: float) -> tuple[str, float]:
         cap = cv2.VideoCapture(video_path)
+        frames: list = []
         try:
-            cap.set(cv2.CAP_PROP_POS_MSEC, ((start + end) / 2) * 1000)
-            ok, frame = cap.read()
+            n = VLM_FRAMES_PER_CHAPTER
+            for i in range(n):
+                # Sample at (i+1)/(n+1) fractions: avoids hitting exact bounds.
+                t = start + (end - start) * ((i + 1) / (n + 1))
+                cap.set(cv2.CAP_PROP_POS_MSEC, t * 1000)
+                ok, frame = cap.read()
+                if ok:
+                    frames.append(frame)
         finally:
             cap.release()
-        if not ok:
+        if not frames:
             return ("", 0.0)
-        out = pipeline.narrative.describe([frame], tracks_hist=[])
+        out = pipeline.narrative.describe(frames, tracks_history=[])
         conf = out.confidence if out.confidence is not None else 0.0
         return (out.text, float(conf))
 
@@ -141,6 +152,7 @@ def bake_m4_from_yaml(
     *,
     out_dir: Path,
     use_fake_pipeline: bool = False,
+    params_path: Path = Path("core/params.yaml"),
 ) -> None:
     """Bake all clips from the given YAML into per-slug bundles under out_dir."""
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -155,7 +167,7 @@ def bake_m4_from_yaml(
         vlm_call = _fake_vlm_call
     else:
         from purrai_core.config import load_config
-        cfg = load_config(Path("core/params.yaml"))
+        cfg = load_config(params_path)
         pipeline = _build_real_pipeline(cfg)
         vlm_call = _build_real_vlm_call(pipeline)
 
@@ -223,12 +235,19 @@ def _main() -> None:
         action="store_true",
         help="Use Fake backends (no real detector/pose/VLM); smoke-test only",
     )
+    parser.add_argument(
+        "--params",
+        type=Path,
+        default=Path("core/params.yaml"),
+        help="Path to params.yaml (override for CPU-only / non-CUDA hosts)",
+    )
     args = parser.parse_args()
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
     bake_m4_from_yaml(
         args.yaml_path,
         out_dir=args.out_dir,
         use_fake_pipeline=args.use_fake_pipeline,
+        params_path=args.params,
     )
 
 
