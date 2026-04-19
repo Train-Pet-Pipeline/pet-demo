@@ -2,8 +2,6 @@ from __future__ import annotations
 
 import copy
 
-import pytest
-
 from purrai_core.stitch import stitch_tracks
 from purrai_core.types import BBox, Track
 

@@ -11,7 +11,7 @@ from __future__ import annotations
 import copy
 import logging
 import math
-from typing import Sequence
+from collections.abc import Sequence
 
 import numpy as np
 from scipy.optimize import linear_sum_assignment
@@ -148,7 +148,7 @@ def stitch_tracks(
     row_ind, col_ind = linear_sum_assignment(safe_cost)
 
     rewrite: dict[int, int] = {}  # birth_id -> death_id
-    for i, j in zip(row_ind, col_ind):
+    for i, j in zip(row_ind, col_ind, strict=False):
         if not math.isfinite(cost[i, j]):
             continue
         d = deaths[i]
