@@ -1,4 +1,3 @@
-// frontends/scripts/gen-assets/stitch-videos.mjs
 #!/usr/bin/env node
 import { execFileSync } from "node:child_process";
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";

@@ -60,13 +60,11 @@ def test_qwen2vl_describe_returns_narrative_output() -> None:
     assert result.meta["backend"] == "qwen2-vl-2b"
 
 
-def test_qwen2vl_picks_middle_frame() -> None:
-    """describe() passes the middle frame (index len//2) to Image.fromarray."""
+def test_qwen2vl_passes_all_frames_as_multi_image() -> None:
+    """describe() passes every frame (BGR→RGB) to Image.fromarray in order."""
     mock_model_cls, mock_autoproc_cls = _make_mocks()
 
-    # 5 frames — middle is index 2
     frames = [np.full((480, 640, 3), i * 10, dtype=np.uint8) for i in range(5)]
-    middle_frame = frames[2]
 
     with (
         patch(f"{_MODULE}.Qwen2VLForConditionalGeneration", mock_model_cls),
@@ -80,8 +78,6 @@ def test_qwen2vl_picks_middle_frame() -> None:
         gen = Qwen2VLNarrative(CFG)
         gen.describe(frames, [])
 
-    mock_fromarray.assert_called_once()
-    call_arg = mock_fromarray.call_args[0][0]
-    # The backend does BGR→RGB conversion: frames[2][..., ::-1]
-    expected = middle_frame[..., ::-1]
-    np.testing.assert_array_equal(call_arg, expected)
+    assert mock_fromarray.call_count == len(frames)
+    for i, call in enumerate(mock_fromarray.call_args_list):
+        np.testing.assert_array_equal(call[0][0], frames[i][..., ::-1])
