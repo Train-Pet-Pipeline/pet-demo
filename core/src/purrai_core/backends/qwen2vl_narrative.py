@@ -64,7 +64,7 @@ class Qwen2VLNarrative(NarrativeGenerator):
             NarrativeOutput with generated text and backend metadata.
         """
         images = [Image.fromarray(f[..., ::-1]) for f in frames]  # BGR → RGB
-        content: list[dict] = [{"type": "image"} for _ in images]
+        content: list[dict[str, str]] = [{"type": "image"} for _ in images]
         content.append({"type": "text", "text": "请描述这只宠物的状态。"})
         messages = [
             {"role": "system", "content": self.system_prompt},
@@ -83,5 +83,5 @@ class Qwen2VLNarrative(NarrativeGenerator):
         output_text = self.processor.batch_decode(
             out_ids[:, inputs.input_ids.shape[1] :], skip_special_tokens=True
         )[0].strip()
-        meta = {"backend": "qwen2-vl-2b", "num_frames": len(frames)}
+        meta: dict[str, str] = {"backend": "qwen2-vl-2b", "num_frames": str(len(frames))}
         return NarrativeOutput(text=output_text, confidence=None, meta=meta)
