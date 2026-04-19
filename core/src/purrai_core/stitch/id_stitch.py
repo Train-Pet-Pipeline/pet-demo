@@ -167,13 +167,15 @@ def stitch_tracks(
         new_trs: list[Track] = []
         for tr in trs:
             if tr.track_id in rewrite:
-                new_trs.append(Track(
-                    track_id=rewrite[tr.track_id],
-                    bbox=tr.bbox,
-                    score=tr.score,
-                    class_id=tr.class_id,
-                    class_name=tr.class_name,
-                ))
+                new_trs.append(
+                    Track(
+                        track_id=rewrite[tr.track_id],
+                        bbox=tr.bbox,
+                        score=tr.score,
+                        class_id=tr.class_id,
+                        class_name=tr.class_name,
+                    )
+                )
             else:
                 new_trs.append(tr)
         out.append((f, new_trs))
