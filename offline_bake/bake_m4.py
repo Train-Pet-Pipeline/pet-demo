@@ -25,7 +25,8 @@ from purrai_core.pipelines.full_pipeline import FullPipeline
 from purrai_core.utils.video_io import iter_frames
 
 from offline_bake.chapter_narratives import build_chaptered_narratives
-from offline_bake.serializers import serialize_poses, serialize_tracks
+from offline_bake.serializers import serialize_poses, serialize_reids, serialize_tracks
+from purrai_core.stitch import stitch_tracks
 
 log = logging.getLogger(__name__)
 
@@ -103,16 +104,31 @@ def _fake_vlm_call(video_path: str, start: float, end: float) -> tuple[str, floa
 
 def _run_pipeline_over_video(
     pipeline: FullPipeline, path: Path, fps: int = TARGET_FPS
-) -> tuple[list[tuple[float, list]], list[tuple[float, list]]]:
-    """Run the pipeline frame-by-frame and collect aligned track/pose timelines."""
+) -> tuple[
+    list[tuple[float, list]],
+    list[tuple[float, list]],
+    list[tuple[int, list]],  # (frame_idx, list[ReidEmbedding])
+]:
+    """Run the pipeline frame-by-frame and collect aligned track/pose/reid timelines."""
     track_frames: list[tuple[float, list]] = []
     pose_frames: list[tuple[float, list]] = []
+    reid_frames: list[tuple[int, list]] = []
     for idx, frame in iter_frames(path, None):
         result = pipeline.process_frame(frame, idx)
         t = idx / fps
         track_frames.append((t, result.tracks))
         pose_frames.append((t, result.poses))
-    return track_frames, pose_frames
+        reid_frames.append((idx, result.embeddings))
+    return track_frames, pose_frames, reid_frames
+
+
+def _load_stitch_cfg(params_path: Path) -> dict:
+    """Load just the `stitch` section from params.yaml (for both real + fake runs)."""
+    import yaml
+    cfg = yaml.safe_load(params_path.read_text())
+    if "stitch" not in cfg:
+        raise KeyError(f"{params_path}: missing 'stitch' section")
+    return cfg["stitch"]
 
 
 VLM_FRAMES_PER_CHAPTER = 3
@@ -180,12 +196,38 @@ def bake_m4_from_yaml(
             _normalize_raw(clip.source_mp4, raw_dst)
             duration = _probe_duration(raw_dst)
 
-            track_frames, pose_frames = _run_pipeline_over_video(pipeline, raw_dst)
+            track_frames, pose_frames, reid_frames = _run_pipeline_over_video(pipeline, raw_dst)
             (bundle / "tracks.json").write_text(
                 json.dumps(serialize_tracks(track_frames, fps=TARGET_FPS))
             )
             (bundle / "poses.json").write_text(
                 json.dumps(serialize_poses(pose_frames, fps=TARGET_FPS))
+            )
+            (bundle / "reids.json").write_text(
+                json.dumps(serialize_reids(reid_frames, fps=TARGET_FPS))
+            )
+
+            # Render-time id stitch -> tracks.stitched.json (pure post-processing;
+            # original tracks.json never mutated).
+            stitch_cfg = _load_stitch_cfg(params_path)
+            tracks_for_stitch = [
+                (int(round(t * TARGET_FPS)), trs) for t, trs in track_frames
+            ]
+            reids_for_stitch = [
+                (idx, {e.track_id: list(e.vector) for e in embs})
+                for idx, embs in reid_frames
+            ]
+            stitched = stitch_tracks(
+                tracks_for_stitch, reids_for_stitch,
+                cosine_threshold=float(stitch_cfg["cosine_threshold"]),
+                max_gap_frames=int(stitch_cfg["max_gap_frames"]),
+                embedding_window=int(stitch_cfg["embedding_window"]),
+            )
+            stitched_as_tracks = [
+                (idx / TARGET_FPS, trs) for idx, trs in stitched
+            ]
+            (bundle / "tracks.stitched.json").write_text(
+                json.dumps(serialize_tracks(stitched_as_tracks, fps=TARGET_FPS))
             )
 
             narr = build_chaptered_narratives(
