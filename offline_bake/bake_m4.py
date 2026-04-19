@@ -207,3 +207,30 @@ def bake_m4_from_yaml(
             "clips": clips_info,
         }
         (out_dir / "manifest.json").write_text(json.dumps(manifest, indent=2))
+
+
+def _main() -> None:
+    import argparse
+
+    parser = argparse.ArgumentParser(
+        prog="python -m offline_bake.bake_m4",
+        description="Bake M4 curated-clips YAML into per-slug artifact bundles.",
+    )
+    parser.add_argument("yaml_path", type=Path, help="Path to curated-clips YAML")
+    parser.add_argument("out_dir", type=Path, help="Output directory for bundles + manifest.json")
+    parser.add_argument(
+        "--use-fake-pipeline",
+        action="store_true",
+        help="Use Fake backends (no real detector/pose/VLM); smoke-test only",
+    )
+    args = parser.parse_args()
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
+    bake_m4_from_yaml(
+        args.yaml_path,
+        out_dir=args.out_dir,
+        use_fake_pipeline=args.use_fake_pipeline,
+    )
+
+
+if __name__ == "__main__":
+    _main()

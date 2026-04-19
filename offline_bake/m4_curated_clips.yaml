@@ -3,16 +3,6 @@
 # per docs/m4-video-asset-brief.md. offline_bake/bake_m4.py reads this.
 version: "0.4.0"
 clips:
-  - slug: daily-life-continuity-3ch
-    source_mp4: videos/stitched/daily-life-continuity-3ch.mp4
-    source: ai_generated
-    title: "舔毛 → 进食 → 起身离开"
-    tags: [daily, continuity]
-    chapters:
-      - { start: 0.0, end: 8.0 }
-      - { start: 8.0, end: 16.0 }
-      - { start: 16.0, end: 24.0 }
-
   - slug: alert-to-collapse-3ch
     source_mp4: videos/stitched/alert-to-collapse-3ch.mp4
     source: ai_generated
