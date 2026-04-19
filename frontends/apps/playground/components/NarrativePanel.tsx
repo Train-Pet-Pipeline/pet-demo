@@ -18,7 +18,7 @@ export function NarrativePanel({ chapter }: Props) {
         <div className="flex-1 h-1.5 bg-ink/10 rounded-full overflow-hidden">
           <div className="h-full bg-clay rounded-full" style={{ width: `${pct}%` }} />
         </div>
-        <span className="text-xs text-ink/50">{pct}%</span>
+        <span className="text-xs text-ink/70">{pct}%</span>
       </div>
     </div>
   );
