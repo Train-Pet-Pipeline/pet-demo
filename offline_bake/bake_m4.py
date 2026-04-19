@@ -8,27 +8,30 @@ Uses `offline_bake.generate_overlays._build_fake_pipeline` /
 `_build_real_pipeline` to build the FullPipeline — never duplicates that
 construction.
 """
+
 from __future__ import annotations
 
 import datetime
 import json
 import logging
 import subprocess
+from collections.abc import Callable
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Callable
 
 import ffmpeg
 import yaml
-
 from purrai_core.pipelines.full_pipeline import FullPipeline
+from purrai_core.stitch import stitch_tracks
 from purrai_core.utils.video_io import iter_frames
 
 from offline_bake.chapter_narratives import build_chaptered_narratives
 from offline_bake.serializers import serialize_poses, serialize_reids, serialize_tracks
-from purrai_core.stitch import stitch_tracks
 
 log = logging.getLogger(__name__)
+
+# Default params.yaml path resolved relative to this file so it works regardless of CWD.
+_DEFAULT_PARAMS = Path(__file__).parent.parent / "core" / "params.yaml"
 
 TARGET_FPS = 25
 TARGET_W = 1280
@@ -52,14 +55,16 @@ def _load_yaml(yaml_path: Path) -> list[ClipSpec]:
         chapters: list[tuple[float, float]] | None = None
         if entry.get("chapters"):
             chapters = [(float(c["start"]), float(c["end"])) for c in entry["chapters"]]
-        clips.append(ClipSpec(
-            slug=entry["slug"],
-            source_mp4=Path(entry["source_mp4"]),
-            source=entry["source"],
-            title=entry["title"],
-            tags=list(entry.get("tags", [])),
-            chapters=chapters,
-        ))
+        clips.append(
+            ClipSpec(
+                slug=entry["slug"],
+                source_mp4=Path(entry["source_mp4"]),
+                source=entry["source"],
+                title=entry["title"],
+                tags=list(entry.get("tags", [])),
+                chapters=chapters,
+            )
+        )
     return clips
 
 
@@ -90,8 +95,19 @@ def _extract_thumb(raw: Path, thumb: Path, at_s: float) -> None:
     # libaom-av1 is NOT guaranteed on CI runners.
     subprocess.run(
         [
-            "ffmpeg", "-y", "-ss", f"{at_s:.3f}", "-i", str(raw),
-            "-vframes", "1", "-c:v", "libsvtav1", "-crf", "40", str(thumb),
+            "ffmpeg",
+            "-y",
+            "-ss",
+            f"{at_s:.3f}",
+            "-i",
+            str(raw),
+            "-vframes",
+            "1",
+            "-c:v",
+            "libsvtav1",
+            "-crf",
+            "40",
+            str(thumb),
         ],
         check=True,
         capture_output=True,
@@ -124,7 +140,6 @@ def _run_pipeline_over_video(
 
 def _load_stitch_cfg(params_path: Path) -> dict:
     """Load just the `stitch` section from params.yaml (for both real + fake runs)."""
-    import yaml
     cfg = yaml.safe_load(params_path.read_text())
     if "stitch" not in cfg:
         raise KeyError(f"{params_path}: missing 'stitch' section")
@@ -134,7 +149,9 @@ def _load_stitch_cfg(params_path: Path) -> dict:
 VLM_FRAMES_PER_CHAPTER = 3
 
 
-def _build_real_vlm_call(pipeline: FullPipeline) -> Callable[[str, float, float], tuple[str, float]]:
+def _build_real_vlm_call(
+    pipeline: FullPipeline,
+) -> Callable[[str, float, float], tuple[str, float]]:
     """Build a per-chapter VLM call that samples VLM_FRAMES_PER_CHAPTER frames
     evenly across [start, end] and invokes the pipeline's NarrativeGenerator
     with all of them so the model sees temporal progression."""
@@ -168,7 +185,7 @@ def bake_m4_from_yaml(
     *,
     out_dir: Path,
     use_fake_pipeline: bool = False,
-    params_path: Path = Path("core/params.yaml"),
+    params_path: Path = _DEFAULT_PARAMS,
 ) -> None:
     """Bake all clips from the given YAML into per-slug bundles under out_dir."""
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -183,6 +200,7 @@ def bake_m4_from_yaml(
         vlm_call = _fake_vlm_call
     else:
         from purrai_core.config import load_config
+
         cfg = load_config(params_path)
         pipeline = _build_real_pipeline(cfg)
         vlm_call = _build_real_vlm_call(pipeline)
@@ -210,22 +228,18 @@ def bake_m4_from_yaml(
             # Render-time id stitch -> tracks.stitched.json (pure post-processing;
             # original tracks.json never mutated).
             stitch_cfg = _load_stitch_cfg(params_path)
-            tracks_for_stitch = [
-                (int(round(t * TARGET_FPS)), trs) for t, trs in track_frames
-            ]
+            tracks_for_stitch = [(int(round(t * TARGET_FPS)), trs) for t, trs in track_frames]
             reids_for_stitch = [
-                (idx, {e.track_id: list(e.vector) for e in embs})
-                for idx, embs in reid_frames
+                (idx, {e.track_id: list(e.vector) for e in embs}) for idx, embs in reid_frames
             ]
             stitched = stitch_tracks(
-                tracks_for_stitch, reids_for_stitch,
+                tracks_for_stitch,
+                reids_for_stitch,
                 cosine_threshold=float(stitch_cfg["cosine_threshold"]),
                 max_gap_frames=int(stitch_cfg["max_gap_frames"]),
                 embedding_window=int(stitch_cfg["embedding_window"]),
             )
-            stitched_as_tracks = [
-                (idx / TARGET_FPS, trs) for idx, trs in stitched
-            ]
+            stitched_as_tracks = [(idx / TARGET_FPS, trs) for idx, trs in stitched]
             (bundle / "tracks.stitched.json").write_text(
                 json.dumps(serialize_tracks(stitched_as_tracks, fps=TARGET_FPS))
             )
@@ -241,23 +255,23 @@ def bake_m4_from_yaml(
             _extract_thumb(raw_dst, bundle / "thumb.avif", at_s=min(1.0, duration / 2))
 
             chapter_count = len(clip.chapters) if clip.chapters else 1
-            clips_info.append({
-                "slug": clip.slug,
-                "title": clip.title,
-                "source": clip.source,
-                "duration_s": round(duration, 3),
-                "chapter_count": chapter_count,
-                "width": TARGET_W,
-                "height": TARGET_H,
-                "tags": clip.tags,
-            })
+            clips_info.append(
+                {
+                    "slug": clip.slug,
+                    "title": clip.title,
+                    "source": clip.source,
+                    "duration_s": round(duration, 3),
+                    "chapter_count": chapter_count,
+                    "width": TARGET_W,
+                    "height": TARGET_H,
+                    "tags": clip.tags,
+                }
+            )
     finally:
         pipeline.shutdown()
         manifest = {
             "version": "0.4.0",
-            "generated_at": datetime.datetime.now(datetime.timezone.utc).isoformat().replace(
-                "+00:00", "Z"
-            ),
+            "generated_at": datetime.datetime.now(datetime.UTC).isoformat().replace("+00:00", "Z"),
             "clips": clips_info,
         }
         (out_dir / "manifest.json").write_text(json.dumps(manifest, indent=2))

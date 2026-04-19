@@ -18,6 +18,9 @@ from purrai_core.types import BBox, Track
 
 log = logging.getLogger(__name__)
 
+# Default params.yaml resolved relative to this file so it works regardless of CWD.
+_DEFAULT_PARAMS = Path(__file__).parent.parent / "core" / "params.yaml"
+
 
 def _load_tracks(path: Path) -> tuple[int, list[tuple[int, list[Track]]]]:
     """Load tracks.json into (fps, [(frame_idx, [Track, ...]), ...])."""
@@ -102,7 +105,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--params",
         type=Path,
-        default=Path("core/params.yaml"),
+        default=_DEFAULT_PARAMS,
         help="Path to params.yaml (reads stitch.* section)",
     )
     args = parser.parse_args(argv)
