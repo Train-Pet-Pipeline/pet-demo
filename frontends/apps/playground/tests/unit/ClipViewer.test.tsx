@@ -1,4 +1,20 @@
 import { render, screen } from "@testing-library/react";
+import { vi } from "vitest";
+
+vi.mock("next-intl", () => ({
+  useTranslations: (ns: string) => (k: string, params?: Record<string, unknown>) => {
+    const map: Record<string, Record<string, string>> = {
+      layers: { title: "图层" },
+      chapters: { title: "章节", label: "章节 {n}" },
+      narrative: { title: "叙事" },
+      badges: { realFootage: "真实拍摄片段 · 模型未预设" },
+    };
+    const val = (map[ns] ?? {})[k] ?? k;
+    if (params && typeof params.n === "number") return val.replace("{n}", String(params.n));
+    return val;
+  },
+}));
+
 import { ClipViewer } from "@/components/ClipViewer";
 
 const tracks = { fps: 25, frames: [{ t: 0, tracks: [{ id: 1, bbox: [10, 20, 100, 200], score: 0.9 }] }] };

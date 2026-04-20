@@ -1,4 +1,17 @@
 import { render, screen, fireEvent } from "@testing-library/react";
+import { vi } from "vitest";
+
+vi.mock("next-intl", () => ({
+  useTranslations: (ns: string) => (k: string, params?: Record<string, unknown>) => {
+    const map: Record<string, Record<string, string>> = {
+      chapters: { title: "章节", label: "章节 {n}" },
+    };
+    const val = (map[ns] ?? {})[k] ?? k;
+    if (params && typeof params.n === "number") return val.replace("{n}", String(params.n));
+    return val;
+  },
+}));
+
 import { ChapterNav } from "@/components/ChapterNav";
 
 const chapters = [
