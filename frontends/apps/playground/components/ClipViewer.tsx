@@ -50,8 +50,8 @@ export function ClipViewer({ slug, clip, tracks, poses, narratives }: Props) {
   };
 
   return (
-    <div className="grid grid-cols-3 gap-6 p-6 max-w-6xl mx-auto">
-      <div className="col-span-2 relative">
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 p-6 max-w-6xl mx-auto">
+      <div className="col-span-1 lg:col-span-2 relative">
         {clip.source === "real_footage" && <UnscriptedBanner />}
         <SchematicOverlay>
           <SourceBadge source={clip.source} />

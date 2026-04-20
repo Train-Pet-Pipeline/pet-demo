@@ -5,7 +5,7 @@ import { SectionShell } from "@purrai/ui";
 export function PainPoint() {
   const t = useTranslations("painPoint");
   return (
-    <SectionShell id="section-03-pain-point" headingId="section-03-heading" className="relative min-h-[400px]">
+    <SectionShell id="section-03-painpoint" headingId="section-03-heading" className="relative min-h-[400px]">
       <Image
         src="/images/pain-point.avif"
         alt=""
