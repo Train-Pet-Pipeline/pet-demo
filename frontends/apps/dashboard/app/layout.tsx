@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Purr·AI Dashboard",
     description: "On-device pet vision pipeline",
-    images: ["/og-cover.png"],
+    images: ["/og-cover.jpg"],
   },
 };
 
