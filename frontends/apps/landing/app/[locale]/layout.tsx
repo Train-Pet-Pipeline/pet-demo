@@ -7,6 +7,12 @@ import { JsonLd } from "../../components/JsonLd";
 import "@purrai/theme/fonts";
 import "../globals.css";
 
+if (process.env.NODE_ENV === "production" && !process.env.NEXT_PUBLIC_SITE_URL) {
+  console.warn(
+    "[purrai] NEXT_PUBLIC_SITE_URL is not set. Canonical URLs will fall back to http://localhost:3100. " +
+    "Set this variable in Vercel project settings for the landing app.",
+  );
+}
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3100";
 
 export function generateStaticParams() {
