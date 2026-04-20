@@ -1,9 +1,10 @@
 import Image from "next/image";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { SectionShell } from "@purrai/ui";
 
 export function Hero() {
   const t = useTranslations("hero");
+  const locale = useLocale();
   return (
     <SectionShell id="section-01-hero" headingId="section-01-heading" className="relative h-screen min-h-[640px]">
       <Image
@@ -18,7 +19,12 @@ export function Hero() {
       <div className="relative z-10 grid h-full place-items-center px-6 text-center">
         <div>
           <h1 id="section-01-heading" className="font-serif text-hero">{t("wordmark")}</h1>
-          <p className="mt-4 font-serif-sc text-h2 text-ink">{t("tagline")}</p>
+          <p
+            className="mt-4 font-serif-sc text-h2 text-ink"
+            style={locale === "zh" ? { wordBreak: "keep-all" } : undefined}
+          >
+            {t("tagline")}
+          </p>
           <p className="mt-2 text-body text-mute">{t("subhead")}</p>
         </div>
       </div>

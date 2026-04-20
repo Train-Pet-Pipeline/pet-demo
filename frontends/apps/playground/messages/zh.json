@@ -2,7 +2,10 @@
   "nav": {
     "gallery": "画廊",
     "back": "返回",
-    "viewDetail": "查看详情"
+    "viewDetail": "查看详情",
+    "switchToEn": "Switch to English",
+    "switchToZh": "切换至中文",
+    "backToGallery": "返回画廊"
   },
   "layers": {
     "title": "图层",
