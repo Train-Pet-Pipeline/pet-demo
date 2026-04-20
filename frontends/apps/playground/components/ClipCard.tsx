@@ -24,7 +24,7 @@ export function ClipCard({ clip }: { clip: ClipManifest }) {
           data-testid="clip-video"
           src={videoUrl}
           poster={posterUrl}
-          preload="metadata"
+          preload="none"
           playsInline
           muted
           className="w-full h-full object-cover"
