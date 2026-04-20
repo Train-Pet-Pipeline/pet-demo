@@ -2,7 +2,8 @@ import { test, expect } from "@playwright/test";
 
 test("click ClipCard play button starts video", async ({ page }) => {
   await page.goto("/");
-  const btn = page.getByRole("button", { name: /播放 Fixture AI 1/ });
+  // Button aria-label is now localized: "View Details <title>" (EN locale default)
+  const btn = page.getByRole("button", { name: /Fixture AI 1/ });
   await expect(btn).toBeVisible();
   const video = page.getByTestId("clip-video").first();
   // Video starts paused before click
