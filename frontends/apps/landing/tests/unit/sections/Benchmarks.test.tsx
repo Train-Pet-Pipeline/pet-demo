@@ -6,18 +6,30 @@ vi.mock("node:fs/promises", () => {
     readFile: async () =>
       JSON.stringify({
         schemaVersion: 1,
-        metrics: [{ key: "x", label: "Test", value: "42", unit: "" }],
+        metrics: [{ key: "x", value: "42", unit: "" }],
       }),
-    // provide enough of the module shape to satisfy the import
     default: {
       readFile: async () =>
         JSON.stringify({
           schemaVersion: 1,
-          metrics: [{ key: "x", label: "Test", value: "42", unit: "" }],
+          metrics: [{ key: "x", value: "42", unit: "" }],
         }),
     },
   };
 });
+
+vi.mock("next-intl/server", () => ({
+  getTranslations: async (ns: string) => {
+    const map: Record<string, Record<string, string>> = {
+      benchmarks: {
+        heading: "基准数据",
+        "metrics.x.label": "Test",
+        "metrics.updating": "更新中",
+      },
+    };
+    return (k: string) => (map[ns] ?? {})[k] ?? k;
+  },
+}));
 
 import { Benchmarks } from "@/components/sections/Benchmarks";
 

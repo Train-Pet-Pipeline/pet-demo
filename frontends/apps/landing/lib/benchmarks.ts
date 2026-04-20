@@ -2,8 +2,7 @@ import { z } from "zod";
 
 const Metric = z.object({
   key: z.string().min(1),
-  label: z.string().min(1),
-  value: z.string().min(1),
+  value: z.string(),
   unit: z.string(),
 });
 

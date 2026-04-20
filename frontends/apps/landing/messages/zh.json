@@ -60,7 +60,21 @@
   },
   "benchmarks": {
     "intro": "基准与延迟,在我们自家的设备上跑出来的。",
-    "heading": "基准数据"
+    "heading": "基准数据",
+    "metrics": {
+      "updating": "更新中",
+      "fps": { "label": "端侧 FPS" },
+      "reid_top1": { "label": "Re-ID Top-1" },
+      "vlm_latency": { "label": "VLM 端侧延迟" },
+      "yolo_map": { "label": "YOLO mAP" }
+    }
+  },
+  "schematic": {
+    "label": "示意图 · 非真实推理输出",
+    "aria": "示意图,非真实推理输出"
+  },
+  "a11y": {
+    "skip": "跳到主内容"
   },
   "closing": {
     "wordmark": "Purr·AI",
