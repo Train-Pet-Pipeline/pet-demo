@@ -13,7 +13,8 @@ The landing app uses a **separate Vercel project** from the dashboard. **Do not*
 7. Output Directory: `.next` (default)
 8. Production Branch: `main`
 9. Preview Branches: `dev` (and any `feature/*`)
-10. Environment Variables: none required for runtime (gen-assets keys are local/CI only).
+10. Environment Variables:
+    - **`NEXT_PUBLIC_SITE_URL`** (required for production): set to the canonical production domain, e.g. `https://purrai.ai`. The repo ships `.env.production` with this default; override in Vercel env settings if the domain differs. Without it, canonical URLs in metadata will fall back to `http://localhost:3100` and a build-time warning fires in Vercel logs.
 
 ## Install command fallback
 
