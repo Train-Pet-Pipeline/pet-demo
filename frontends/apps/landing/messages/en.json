@@ -1,4 +1,8 @@
 {
+  "nav": {
+    "switchToEn": "Switch to English",
+    "switchToZh": "切换至中文"
+  },
   "meta": {
     "title": "Purr·AI — On-device multimodal cat understanding",
     "description": "Hear every purr, rumble, and breath. Privacy-first on-device VLM pipeline for cat health.",
