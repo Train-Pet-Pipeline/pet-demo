@@ -1,7 +1,12 @@
 // components/SourceBadge.tsx — app-local; labels ai_generated vs real_footage
 type Tone = "clay" | "moss";
-export function SourceBadge({ source }: { source: "ai_generated" | "real_footage" }) {
-  const label = source === "ai_generated" ? "AI 生成示意" : "真实拍摄 · 未预设";
+interface SourceBadgeProps {
+  source: "ai_generated" | "real_footage";
+  aiLabel: string;
+  realLabel: string;
+}
+export function SourceBadge({ source, aiLabel, realLabel }: SourceBadgeProps) {
+  const label = source === "ai_generated" ? aiLabel : realLabel;
   const tone: Tone = source === "ai_generated" ? "clay" : "moss";
   const bg = tone === "clay" ? "bg-clay" : "bg-moss";
   return (
