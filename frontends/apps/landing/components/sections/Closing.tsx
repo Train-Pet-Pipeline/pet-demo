@@ -2,6 +2,9 @@ import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { SectionShell, EmailForm } from "@purrai/ui";
 
+const PLAYGROUND_URL =
+  process.env.NEXT_PUBLIC_PLAYGROUND_URL ?? "https://purrai-playground.vercel.app";
+
 export function Closing() {
   const t = useTranslations("closing");
   return (
@@ -18,6 +21,12 @@ export function Closing() {
         <div>
           <h2 id="section-08-heading" className="font-serif text-hero text-ink">{t("wordmark")}</h2>
           <p className="mt-4 font-serif-sc text-h2 text-ink">{t("tagline")}</p>
+          <a
+            href={PLAYGROUND_URL}
+            className="mt-6 inline-flex items-center min-h-[44px] px-4 py-2 text-ink underline underline-offset-4 hover:text-clay focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-clay focus-visible:ring-offset-2 rounded"
+          >
+            {t("playgroundCta")}
+          </a>
           <div className="mt-10 mx-auto max-w-sm">
             <EmailForm
               labelText={t("subscribe.label")}

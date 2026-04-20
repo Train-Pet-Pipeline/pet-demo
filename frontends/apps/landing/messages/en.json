@@ -20,14 +20,14 @@
   },
   "privacy": {
     "intro": "Your cat's data — from device to alert — stays entirely at home.",
-    "step1": "On-device VLM inference · as quiet as furniture",
+    "step1": "Runs locally · quiet as furniture",
     "step2": "Structured notes · not raw recordings",
     "step3": "You read on your own schedule · there is no cloud to watch",
     "outro": "We can't see any data, because we don't."
   },
   "painPoint": {
     "headline": "When you're out, what is she telling you?",
-    "body": "Cats don't cry for help loudly. They tell you with a low rumble, a pause, a posture. We hear those signals, the first faint time."
+    "body": "Cats don't cry for help loudly. They tell you with a low rumble, a pause, a posture. We hear them the first time they whisper."
   },
   "alerts": {
     "intro": "Six kinds of signals we surface proactively",
@@ -41,7 +41,7 @@
     }
   },
   "abilities": {
-    "intro": "Four on-device capabilities, together forming her understanding",
+    "intro": "Four on-device capabilities, working together to understand her.",
     "items": {
       "01": { "title": "Multi-object detection & tracking", "body": "YOLO + ByteTrack — find every cat and hold her identity." },
       "02": { "title": "Re-ID individual recognition", "body": "OSNet — tell each one apart at home." },
@@ -63,7 +63,7 @@
     }
   },
   "benchmarks": {
-    "intro": "Benchmarks and latency, measured on our own devices.",
+    "intro": "Real latency, on the hardware we ship.",
     "heading": "Benchmarks",
     "metrics": {
       "updating": "Updating",
@@ -83,8 +83,9 @@
   "closing": {
     "wordmark": "Purr·AI",
     "tagline": "Because we finally understand.",
+    "playgroundCta": "See it first in the playground →",
     "subscribe": {
-      "label": "Subscribe · get the first invites",
+      "label": "Subscribe · early access invites",
       "button": "Subscribe",
       "success": "Thank you — we'll be in touch.",
       "busy": "Submitting…",

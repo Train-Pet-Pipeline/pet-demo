@@ -12,7 +12,7 @@ export function SchematicOverlay({ children, className, badgeLabel, badgeAria }:
   return (
     <div className={className} style={{ position: "relative" }}>
       {children}
-      <IllustrationBadge label={badgeLabel} aria={badgeAria} />
+      {badgeLabel && <IllustrationBadge label={badgeLabel} aria={badgeAria} />}
     </div>
   );
 }

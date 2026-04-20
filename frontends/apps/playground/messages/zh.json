@@ -26,10 +26,18 @@
   },
   "badges": {
     "aiGenerated": "AI 生成示意",
-    "realFootage": "真实拍摄 · 未预设"
+    "realFootage": "真实拍摄 · 未预设",
+    "unscriptedBanner": "真实拍摄片段 · 模型未预设"
   },
   "schematic": {
     "label": "示意图 · 非真实推理输出",
     "aria": "示意图标记：非真实推理输出"
+  },
+  "a11y": {
+    "skip": "跳转到主内容"
+  },
+  "meta": {
+    "title": "Purr·AI 演练场",
+    "description": "逐帧检视端侧宠物健康管线：检测 · 跟踪 · 重识别 · 姿态 · 叙事"
   }
 }

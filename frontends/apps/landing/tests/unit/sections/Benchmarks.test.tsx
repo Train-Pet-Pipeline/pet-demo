@@ -19,7 +19,8 @@ vi.mock("node:fs/promises", () => {
 });
 
 vi.mock("next-intl/server", () => ({
-  getTranslations: async (ns: string) => {
+  getTranslations: async (arg: string | { namespace: string }) => {
+    const ns = typeof arg === "string" ? arg : arg.namespace;
     const map: Record<string, Record<string, string>> = {
       benchmarks: {
         heading: "基准数据",
@@ -35,7 +36,7 @@ import { Benchmarks } from "@/components/sections/Benchmarks";
 
 describe("Benchmarks section", () => {
   it("renders metrics from json", async () => {
-    const ui = await Benchmarks();
+    const ui = await Benchmarks({ locale: "zh" });
     render(ui);
     expect(screen.getByText("Test")).toBeInTheDocument();
     expect(screen.getByText(/42/)).toBeInTheDocument();

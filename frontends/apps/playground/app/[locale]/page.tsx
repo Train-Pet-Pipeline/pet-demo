@@ -21,14 +21,15 @@ async function loadManifest() {
 
 export default async function Page({ params: { locale } }: { params: { locale: string } }) {
   unstable_setRequestLocale(locale);
-  const t = await getTranslations({ locale, namespace: "state" });
+  const tState = await getTranslations({ locale, namespace: "state" });
+  const tNav = await getTranslations({ locale, namespace: "nav" });
   const { clips } = await loadManifest();
   if (clips.length === 0) {
-    return <main className="p-8"><p>{t("empty")}</p></main>;
+    return <main className="p-8"><p>{tState("empty")}</p></main>;
   }
   return (
     <main className="p-8 max-w-5xl mx-auto">
-      <h1 className="font-serif text-3xl mb-8">Playground</h1>
+      <h1 className="font-serif text-3xl mb-8">{tNav("gallery")}</h1>
       <div className="grid grid-cols-2 gap-6">
         {clips.map((c) => (
           <ClipCard

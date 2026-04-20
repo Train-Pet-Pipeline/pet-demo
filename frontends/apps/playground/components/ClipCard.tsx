@@ -1,11 +1,17 @@
 // components/ClipCard.tsx
 "use client";
 import { useRef } from "react";
-import Link from "next/link";
 import { useTranslations } from "next-intl";
+import { createSharedPathnamesNavigation } from "next-intl/navigation";
 import { IllustrationBadge, SchematicOverlay } from "@purrai/ui";
 import type { ClipManifest } from "@/lib/artifacts";
 import { SourceBadge } from "./SourceBadge";
+import { locales } from "../i18n";
+
+const { Link: IntlLink } = createSharedPathnamesNavigation({
+  locales: [...locales],
+  localePrefix: "as-needed",
+});
 
 export function ClipCard({ clip }: { clip: ClipManifest }) {
   const t = useTranslations();
@@ -44,9 +50,12 @@ export function ClipCard({ clip }: { clip: ClipManifest }) {
         />
       </button>
       <h3 className="font-serif text-ink mt-3">{clip.title}</h3>
-      <Link href={`/playground/${clip.slug}`} className="text-xs underline mt-2 inline-block">
+      <IntlLink
+        href={`/${clip.slug}`}
+        className="text-xs underline mt-2 inline-flex items-center min-h-[44px]"
+      >
         {t("nav.viewDetail")}
-      </Link>
+      </IntlLink>
     </div>
   );
 }

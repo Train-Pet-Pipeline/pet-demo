@@ -2,13 +2,12 @@
 
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
-import { usePathname } from "next/navigation";
 import { createSharedPathnamesNavigation } from "next-intl/navigation";
 import { locales } from "../i18n";
 
 const landingUrl = process.env.NEXT_PUBLIC_LANDING_URL ?? "/";
 
-const { Link: IntlLink } = createSharedPathnamesNavigation({
+const { Link: IntlLink, usePathname } = createSharedPathnamesNavigation({
   locales: [...locales],
   localePrefix: "as-needed",
 });
@@ -41,8 +40,7 @@ export function Header() {
   const switchLabel = locale === "zh" ? "EN" : "中";
   const switchAriaLabel = locale === "zh" ? t("switchToEn") : t("switchToZh");
 
-  // Detect if we are on a detail page (has a slug segment beyond the locale prefix)
-  // Pathname from next/navigation is always locale-stripped in next-intl
+  // pathname from next-intl is locale-stripped; root gallery is "/".
   const isDetailPage = pathname !== "/" && pathname !== "";
 
   return (
