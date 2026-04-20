@@ -10,19 +10,26 @@ vi.mock("recharts", () => ({
   ResponsiveContainer: ({ children }: { children: React.ReactNode }) => <>{children}</>,
 }));
 
+const translationsByNs: Record<string, Record<string, string>> = {
+  radar: {
+    intro: "情绪的八个面向,从一段时间观察它的状态",
+    "dimensions.calm": "平静",
+    "dimensions.alert": "警觉",
+    "dimensions.playful": "玩心",
+    "dimensions.anxious": "焦虑",
+    "dimensions.affection": "亲昵",
+    "dimensions.fatigue": "疲惫",
+    "dimensions.appetite": "食欲",
+    "dimensions.vocal": "话痨",
+  },
+  schematic: {
+    label: "示意图 · 非真实推理输出",
+    aria: "示意图,非真实推理输出",
+  },
+};
+
 vi.mock("next-intl", () => ({
-  useTranslations: () => (k: string) =>
-    ({
-      intro: "情绪的八个面向,从一段时间观察它的状态",
-      "dimensions.calm": "平静",
-      "dimensions.alert": "警觉",
-      "dimensions.playful": "玩心",
-      "dimensions.anxious": "焦虑",
-      "dimensions.affection": "亲昵",
-      "dimensions.fatigue": "疲惫",
-      "dimensions.appetite": "食欲",
-      "dimensions.vocal": "话痨",
-    } as Record<string, string>)[k] ?? k,
+  useTranslations: (ns: string) => (k: string) => (translationsByNs[ns] ?? {})[k] ?? k,
 }));
 
 import { EmotionRadar } from "@/components/sections/EmotionRadar";

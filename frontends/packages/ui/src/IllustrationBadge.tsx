@@ -3,13 +3,20 @@ import type { CSSProperties } from "react";
 export interface IllustrationBadgeProps {
   className?: string;
   style?: CSSProperties;
+  label?: string;
+  aria?: string;
 }
 
-export function IllustrationBadge({ className, style }: IllustrationBadgeProps) {
+export function IllustrationBadge({
+  className,
+  style,
+  label = "示意图 · 非真实推理输出",
+  aria = "示意图,非真实推理输出",
+}: IllustrationBadgeProps) {
   return (
     <span
       role="note"
-      aria-label="示意图,非真实推理输出"
+      aria-label={aria}
       className={className}
       style={{
         position: "absolute",
@@ -24,7 +31,7 @@ export function IllustrationBadge({ className, style }: IllustrationBadgeProps) 
         ...style,
       }}
     >
-      示意图 · 非真实推理输出
+      {label}
     </span>
   );
 }

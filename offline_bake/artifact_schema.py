@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, List
+from typing import Any
 
 import dacite
 
@@ -81,7 +81,7 @@ class TrackFrameEntry:
     """A single tracked object within one frame."""
 
     id: int
-    bbox: List[int]  # [x1, y1, x2, y2] top-left to bottom-right corners
+    bbox: list[int]  # [x1, y1, x2, y2] top-left to bottom-right corners
     score: float
 
 
@@ -90,7 +90,7 @@ class TrackFrame:
     """All tracks for a single video timestamp."""
 
     t: float
-    tracks: List[TrackFrameEntry]
+    tracks: list[TrackFrameEntry]
 
 
 @dataclass(frozen=True)
@@ -98,7 +98,7 @@ class TracksManifest:
     """Full per-frame tracking output for a clip."""
 
     fps: int
-    frames: List[TrackFrame]
+    frames: list[TrackFrame]
 
 
 @dataclass(frozen=True)
@@ -106,7 +106,7 @@ class PoseFrameEntry:
     """Pose keypoints for one tracked animal in one frame."""
 
     id: int
-    keypoints: List[List[float]]  # 17 × [x, y, conf]
+    keypoints: list[list[float]]  # 17 × [x, y, conf]
 
 
 @dataclass(frozen=True)
@@ -114,7 +114,7 @@ class PoseFrame:
     """All pose results for a single video timestamp."""
 
     t: float
-    poses: List[PoseFrameEntry]
+    poses: list[PoseFrameEntry]
 
 
 @dataclass(frozen=True)
@@ -123,7 +123,7 @@ class PosesManifest:
 
     fps: int
     schema: str  # e.g. "ap10k-17"
-    frames: List[PoseFrame]
+    frames: list[PoseFrame]
 
 
 @dataclass(frozen=True)
@@ -140,7 +140,7 @@ class Chapter:
 class ChapteredNarratives:
     """Ordered list of narrative chapters for a clip."""
 
-    chapters: List[Chapter]
+    chapters: list[Chapter]
 
 
 @dataclass(frozen=True)
@@ -154,7 +154,40 @@ class M4ClipManifest:
     chapter_count: int
     width: int
     height: int
-    tags: List[str]
+    tags: list[str]
+
+
+# ---------------------------------------------------------------------------
+# M5 reid-stitch dataclasses
+# ---------------------------------------------------------------------------
+
+
+@dataclass(frozen=True)
+class ReidFrame:
+    """Per-frame reid embeddings keyed by track_id."""
+
+    frame_idx: int
+    embeddings: dict[int, list[float]]  # track_id -> embedding vector
+
+
+@dataclass(frozen=True)
+class ReidsManifest:
+    """Full per-frame reid embeddings for a clip."""
+
+    fps: int
+    frames: list[ReidFrame]
+
+
+def parse_reids(payload: dict) -> ReidsManifest:
+    """Parse a reids JSON payload. Coerces JSON's string keys to int track_ids."""
+    frames = [
+        ReidFrame(
+            frame_idx=int(f["frame_idx"]),
+            embeddings={int(k): list(v) for k, v in f["embeddings"].items()},
+        )
+        for f in payload["frames"]
+    ]
+    return ReidsManifest(fps=int(payload["fps"]), frames=frames)
 
 
 def parse_tracks(payload: dict) -> TracksManifest:

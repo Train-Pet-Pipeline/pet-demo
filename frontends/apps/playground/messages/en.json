@@ -1,0 +1,35 @@
+{
+  "nav": {
+    "gallery": "Gallery",
+    "back": "Back",
+    "viewDetail": "View Details",
+    "switchToEn": "Switch to English",
+    "switchToZh": "切换至中文",
+    "backToGallery": "Back to gallery"
+  },
+  "layers": {
+    "title": "Layers",
+    "tracks": "Tracks",
+    "poses": "Poses",
+    "narratives": "Narratives"
+  },
+  "chapters": {
+    "title": "Chapters",
+    "label": "Chapter {n}"
+  },
+  "narrative": {
+    "title": "Narrative"
+  },
+  "state": {
+    "loading": "Loading",
+    "empty": "Artifacts not ready"
+  },
+  "badges": {
+    "aiGenerated": "AI generated",
+    "realFootage": "Real footage · unscripted model"
+  },
+  "schematic": {
+    "label": "Illustration · not real inference output",
+    "aria": "Illustration badge: not real inference output"
+  }
+}

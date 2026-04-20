@@ -1,0 +1,94 @@
+{
+  "nav": {
+    "switchToEn": "Switch to English",
+    "switchToZh": "切换至中文"
+  },
+  "meta": {
+    "title": "Purr·AI — On-device multimodal cat understanding",
+    "description": "Hear every purr, rumble, and breath. Privacy-first on-device VLM pipeline for cat health.",
+    "ogImage": "/og/purrai-og.jpg"
+  },
+  "comingSoon": {
+    "wordmark": "Purr·AI",
+    "tagline": "Hear every purr, rumble, and breath.",
+    "subtitle": "Coming Soon"
+  },
+  "hero": {
+    "wordmark": "Purr·AI",
+    "tagline": "Hear every purr, rumble, and breath.",
+    "subhead": "Multimodal understanding of your pet, running entirely at home."
+  },
+  "privacy": {
+    "intro": "Your cat's data — from device to alert — stays entirely at home.",
+    "step1": "On-device VLM inference · as quiet as furniture",
+    "step2": "Structured notes · not raw recordings",
+    "step3": "You read on your own schedule · there is no cloud to watch",
+    "outro": "We can't see any data, because we don't."
+  },
+  "painPoint": {
+    "headline": "When you're out, what is she telling you?",
+    "body": "Cats don't cry for help loudly. They tell you with a low rumble, a pause, a posture. We hear those signals, the first faint time."
+  },
+  "alerts": {
+    "intro": "Six kinds of signals we surface proactively",
+    "items": {
+      "01": { "title": "Unusual whimper", "body": "Sustained low moan or distress call; we log the time and mood." },
+      "02": { "title": "No eating ≥ 12h", "body": "Bowl hasn't changed; could be a health flag." },
+      "03": { "title": "Vomiting / irregular breathing", "body": "Short coughs or repeated head-raises; worth attention." },
+      "04": { "title": "Sudden sleep pattern shift", "body": "Day/night rhythm flips; could be an early sign." },
+      "05": { "title": "Overgrooming", "body": "Repeated licking of one spot; anxiety or skin problem." },
+      "06": { "title": "Missing ≥ 4h", "body": "Re-ID model hasn't seen her; we let you know." }
+    }
+  },
+  "abilities": {
+    "intro": "Four on-device capabilities, together forming her understanding",
+    "items": {
+      "01": { "title": "Multi-object detection & tracking", "body": "YOLO + ByteTrack — find every cat and hold her identity." },
+      "02": { "title": "Re-ID individual recognition", "body": "OSNet — tell each one apart at home." },
+      "03": { "title": "Pose & behavior", "body": "AP-10K keypoints — catch grooming, jumps, rest." },
+      "04": { "title": "VLM natural-language summary", "body": "Qwen2-VL fine-tune — structured health notes." }
+    }
+  },
+  "radar": {
+    "intro": "Eight dimensions of mood, observed over time",
+    "dimensions": {
+      "calm": "Calm",
+      "alert": "Alert",
+      "playful": "Playful",
+      "anxious": "Anxious",
+      "affection": "Affection",
+      "fatigue": "Fatigue",
+      "appetite": "Appetite",
+      "vocal": "Vocal"
+    }
+  },
+  "benchmarks": {
+    "intro": "Benchmarks and latency, measured on our own devices.",
+    "heading": "Benchmarks",
+    "metrics": {
+      "updating": "Updating",
+      "fps": { "label": "On-device FPS" },
+      "reid_top1": { "label": "Re-ID Top-1" },
+      "vlm_latency": { "label": "VLM On-device Latency" },
+      "yolo_map": { "label": "YOLO mAP" }
+    }
+  },
+  "schematic": {
+    "label": "Schematic · not real inference output",
+    "aria": "schematic, not real inference output"
+  },
+  "a11y": {
+    "skip": "Skip to main content"
+  },
+  "closing": {
+    "wordmark": "Purr·AI",
+    "tagline": "Because we finally understand.",
+    "subscribe": {
+      "label": "Subscribe · get the first invites",
+      "button": "Subscribe",
+      "success": "Thank you — we'll be in touch.",
+      "busy": "Submitting…",
+      "error": "Something went wrong. Please try again."
+    }
+  }
+}

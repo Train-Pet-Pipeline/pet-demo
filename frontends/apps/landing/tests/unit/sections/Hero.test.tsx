@@ -2,6 +2,7 @@ import { render, screen } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
 
 vi.mock("next-intl", () => ({
+  useLocale: () => "zh",
   useTranslations: () => (k: string) =>
     ({ wordmark: "Purr·AI", tagline: "听懂每一声咕噜、低吟、呼吸。", subhead: "端侧多模态宠物理解,只在你家里。" } as Record<string, string>)[k] ?? k,
 }));

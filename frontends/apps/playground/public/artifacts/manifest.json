@@ -1,0 +1,34 @@
+{
+  "version": "0.4.0",
+  "generated_at": "2026-04-19T02:55:28.477064Z",
+  "clips": [
+    {
+      "slug": "playful-jump",
+      "title": "玩耍起跳",
+      "title_en": "Playful jump",
+      "source": "ai_generated",
+      "duration_s": 8.16,
+      "chapter_count": 1,
+      "width": 1280,
+      "height": 720,
+      "tags": [
+        "daily",
+        "baseline"
+      ]
+    },
+    {
+      "slug": "real-footage-6s",
+      "title": "真实素材 · 前 6 秒",
+      "title_en": "Real footage · first 6s",
+      "source": "real_footage",
+      "duration_s": 6.24,
+      "chapter_count": 1,
+      "width": 1280,
+      "height": 720,
+      "tags": [
+        "unscripted",
+        "multi-cat"
+      ]
+    }
+  ]
+}

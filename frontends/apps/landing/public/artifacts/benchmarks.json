@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
   "metrics": [
-    { "key": "yolo_map", "label": "YOLO mAP", "value": "0.86", "unit": "" },
-    { "key": "fps", "label": "端侧 FPS", "value": "更新中", "unit": "" },
-    { "key": "reid_top1", "label": "Re-ID Top-1", "value": "更新中", "unit": "" },
-    { "key": "vlm_latency", "label": "VLM 端侧延迟", "value": "更新中", "unit": "ms" }
+    { "key": "yolo_map", "value": "86", "unit": "%" },
+    { "key": "fps", "value": "", "unit": "" },
+    { "key": "reid_top1", "value": "", "unit": "" },
+    { "key": "vlm_latency", "value": "", "unit": "ms" }
   ]
 }

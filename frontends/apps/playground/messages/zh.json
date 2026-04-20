@@ -1,0 +1,35 @@
+{
+  "nav": {
+    "gallery": "画廊",
+    "back": "返回",
+    "viewDetail": "查看详情",
+    "switchToEn": "Switch to English",
+    "switchToZh": "切换至中文",
+    "backToGallery": "返回画廊"
+  },
+  "layers": {
+    "title": "图层",
+    "tracks": "跟踪框",
+    "poses": "骨架",
+    "narratives": "旁白"
+  },
+  "chapters": {
+    "title": "章节",
+    "label": "章节 {n}"
+  },
+  "narrative": {
+    "title": "叙事"
+  },
+  "state": {
+    "loading": "加载中",
+    "empty": "artifacts 未就绪"
+  },
+  "badges": {
+    "aiGenerated": "AI 生成示意",
+    "realFootage": "真实拍摄 · 未预设"
+  },
+  "schematic": {
+    "label": "示意图 · 非真实推理输出",
+    "aria": "示意图标记：非真实推理输出"
+  }
+}

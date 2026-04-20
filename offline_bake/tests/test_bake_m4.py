@@ -48,6 +48,23 @@ clips:
     assert manifest["clips"][0]["slug"] == "fixture-a"
     assert manifest["clips"][0]["chapter_count"] == 2
 
+    # M5: reids.json and tracks.stitched.json produced alongside other artifacts
+    reids_path = bundle / "reids.json"
+    stitched_path = bundle / "tracks.stitched.json"
+    assert reids_path.exists(), "bake_m4 must emit reids.json"
+    assert stitched_path.exists(), "bake_m4 must emit tracks.stitched.json"
+
+    import json as _json
+    reids = _json.loads(reids_path.read_text())
+    assert reids["fps"] == 25
+    assert isinstance(reids["frames"], list)
+
+    stitched = _json.loads(stitched_path.read_text())
+    original = _json.loads((bundle / "tracks.json").read_text())
+    assert stitched["fps"] == original["fps"]
+    # Schema identical (may or may not rewrite ids for the Fake pipeline's single track)
+    assert {"fps", "frames"} == set(stitched.keys())
+
 
 def test_bake_m4_missing_chapters_single_full_chapter(tmp_path, tmp_video):
     yaml_path = tmp_path / "clips.yaml"

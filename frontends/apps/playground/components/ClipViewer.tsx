@@ -1,6 +1,7 @@
 // components/ClipViewer.tsx
 "use client";
 import { useRef, useState, useEffect, useCallback } from "react";
+import { useTranslations } from "next-intl";
 import { IllustrationBadge, SchematicOverlay } from "@purrai/ui";
 import { CanvasOverlay } from "./CanvasOverlay";
 import { LayerToggles } from "./LayerToggles";
@@ -23,6 +24,7 @@ interface Props {
 }
 
 export function ClipViewer({ slug, clip, tracks, poses, narratives }: Props) {
+  const t = useTranslations();
   const videoRef = useRef<HTMLVideoElement>(null);
   const [showBBox, setBBox] = useState(true);
   const [showPose, setPose] = useState(true);
@@ -50,13 +52,20 @@ export function ClipViewer({ slug, clip, tracks, poses, narratives }: Props) {
   };
 
   return (
-    <div className="grid grid-cols-3 gap-6 p-6 max-w-6xl mx-auto">
-      <div className="col-span-2 relative">
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 p-6 max-w-6xl mx-auto">
+      <div className="col-span-1 lg:col-span-2 relative">
         {clip.source === "real_footage" && <UnscriptedBanner />}
         <SchematicOverlay>
-          <SourceBadge source={clip.source} />
+          <SourceBadge
+            source={clip.source}
+            aiLabel={t("badges.aiGenerated")}
+            realLabel={t("badges.realFootage")}
+          />
         </SchematicOverlay>
-        <IllustrationBadge />
+        <IllustrationBadge
+          label={t("schematic.label")}
+          aria={t("schematic.aria")}
+        />
         <video
           ref={videoRef}
           src={`/artifacts/${slug}/raw.mp4`}
