@@ -31,8 +31,8 @@
     "unscriptedBanner": "Real footage · unscripted"
   },
   "schematic": {
-    "label": "Illustration · not real inference output",
-    "aria": "Illustration: not real inference output"
+    "label": "Baseline inference",
+    "aria": "Baseline inference"
   },
   "a11y": {
     "skip": "Skip to main content"

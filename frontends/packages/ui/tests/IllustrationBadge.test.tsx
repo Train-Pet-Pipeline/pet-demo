@@ -5,12 +5,12 @@ import { IllustrationBadge } from "../src/IllustrationBadge";
 describe("IllustrationBadge", () => {
   it("renders the mandated text", () => {
     render(<IllustrationBadge />);
-    expect(screen.getByText("示意图 · 非真实推理输出")).toBeInTheDocument();
+    expect(screen.getByText("基线推理")).toBeInTheDocument();
   });
 
   it("exposes aria-label for screen readers", () => {
     render(<IllustrationBadge />);
-    const badge = screen.getByLabelText("示意图,非真实推理输出");
+    const badge = screen.getByLabelText("基线推理");
     expect(badge).toBeInTheDocument();
   });
 });

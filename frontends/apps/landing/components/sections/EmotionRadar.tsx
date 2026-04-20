@@ -9,7 +9,7 @@ import {
   PolarRadiusAxis,
   ResponsiveContainer,
 } from "recharts";
-import { SectionShell, SchematicOverlay } from "@purrai/ui";
+import { SectionShell } from "@purrai/ui";
 
 const dimensions: { key: string; value: number }[] = [
   { key: "calm", value: 0.7 },
@@ -24,7 +24,6 @@ const dimensions: { key: string; value: number }[] = [
 
 export function EmotionRadar() {
   const t = useTranslations("radar");
-  const ts = useTranslations("schematic");
   const data = dimensions.map((d) => ({
     subject: t(`dimensions.${d.key}`),
     value: d.value,
@@ -36,16 +35,14 @@ export function EmotionRadar() {
         {t("intro")}
       </h2>
       <div className="mt-12 mx-auto max-w-xl">
-        <SchematicOverlay badgeLabel={ts("label")} badgeAria={ts("aria")}>
-          <ResponsiveContainer width="100%" height={400}>
-            <RadarChart data={data}>
-              <PolarGrid />
-              <PolarAngleAxis dataKey="subject" />
-              <PolarRadiusAxis domain={[0, 1]} tick={false} />
-              <Radar dataKey="value" fill="currentColor" fillOpacity={0.3} stroke="currentColor" />
-            </RadarChart>
-          </ResponsiveContainer>
-        </SchematicOverlay>
+        <ResponsiveContainer width="100%" height={400}>
+          <RadarChart data={data} outerRadius="72%" margin={{ top: 8, right: 32, bottom: 8, left: 32 }}>
+            <PolarGrid />
+            <PolarAngleAxis dataKey="subject" tick={{ fontSize: 12 }} />
+            <PolarRadiusAxis domain={[0, 1]} tick={false} />
+            <Radar dataKey="value" fill="currentColor" fillOpacity={0.3} stroke="currentColor" />
+          </RadarChart>
+        </ResponsiveContainer>
       </div>
     </SectionShell>
   );

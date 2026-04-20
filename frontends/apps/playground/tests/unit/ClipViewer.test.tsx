@@ -11,8 +11,8 @@ vi.mock("next-intl", () => ({
       "badges.aiGenerated": "AI 生成示意",
       "badges.realFootage": "真实拍摄片段 · 模型未预设",
       "badges.unscriptedBanner": "真实拍摄片段 · 模型未预设",
-      "schematic.label": "示意图 · 非真实推理输出",
-      "schematic.aria": "示意图标记：非真实推理输出",
+      "schematic.label": "基线推理",
+      "schematic.aria": "基线推理",
     };
     const val = map[k] ?? k;
     if (params && typeof params.n === "number") return val.replace("{n}", String(params.n));
