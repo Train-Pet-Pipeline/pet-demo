@@ -40,7 +40,8 @@ export default async function Page({
     readJson<{ fps: number; schema: string; frames: { t: number; poses: { id: number; keypoints: number[][] }[] }[] }>(path.join(dir, "poses.json")),
     readJson<NarrativesFile>(path.join(dir, "narratives.json")),
   ]);
-  const localizedTitle = params.locale === "en" && clip.title_en ? clip.title_en : clip.title;
+  const clipAny = clip as typeof clip & { title_en?: string };
+  const localizedTitle = params.locale === "en" && clipAny.title_en ? clipAny.title_en : clip.title;
   return (
     <main className="min-h-screen">
       <h1 className="font-serif text-2xl p-6 max-w-6xl mx-auto">{localizedTitle}</h1>
