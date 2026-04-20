@@ -3,7 +3,7 @@ import { test, expect } from "@playwright/test";
 test("landing renders all 8 section anchors", async ({ page }) => {
   await page.goto("/");
   for (const id of [
-    "section-01-hero", "section-02-privacy", "section-03-pain-point",
+    "section-01-hero", "section-02-privacy", "section-03-painpoint",
     "section-04-alerts", "section-05-abilities", "section-06-radar",
     "section-07-benchmarks", "section-08-closing",
   ]) {
