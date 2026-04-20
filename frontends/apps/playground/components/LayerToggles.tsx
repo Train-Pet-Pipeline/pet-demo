@@ -20,6 +20,7 @@ export function LayerToggles({ showBBox, setBBox, showPose, setPose, showNarr, s
       <label className="flex items-center gap-2 text-sm cursor-pointer min-h-[32px]">
         <input
           type="checkbox"
+          data-testid="layer-toggle-bbox"
           checked={showBBox}
           onChange={(e) => setBBox(e.target.checked)}
           className="w-4 h-4 accent-clay focus-visible:ring-2 focus-visible:ring-clay focus-visible:ring-offset-2"
@@ -29,6 +30,7 @@ export function LayerToggles({ showBBox, setBBox, showPose, setPose, showNarr, s
       <label className="flex items-center gap-2 text-sm cursor-pointer min-h-[32px]">
         <input
           type="checkbox"
+          data-testid="layer-toggle-pose"
           checked={showPose}
           onChange={(e) => setPose(e.target.checked)}
           className="w-4 h-4 accent-clay focus-visible:ring-2 focus-visible:ring-clay focus-visible:ring-offset-2"
@@ -38,6 +40,7 @@ export function LayerToggles({ showBBox, setBBox, showPose, setPose, showNarr, s
       <label className="flex items-center gap-2 text-sm cursor-pointer min-h-[32px]">
         <input
           type="checkbox"
+          data-testid="layer-toggle-narr"
           checked={showNarr}
           onChange={(e) => setNarr(e.target.checked)}
           className="w-4 h-4 accent-clay focus-visible:ring-2 focus-visible:ring-clay focus-visible:ring-offset-2"
