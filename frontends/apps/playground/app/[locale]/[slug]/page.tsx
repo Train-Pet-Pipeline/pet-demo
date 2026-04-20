@@ -38,10 +38,11 @@ export default async function Page({
     readJson<{ fps: number; schema: string; frames: { t: number; poses: { id: number; keypoints: number[][] }[] }[] }>(path.join(dir, "poses.json")),
     readJson<NarrativesFile>(path.join(dir, "narratives.json")),
   ]);
+  const localizedTitle = params.locale === "en" && clip.title_en ? clip.title_en : clip.title;
   return (
     <main>
-      <h1 className="font-serif text-2xl p-6 max-w-6xl mx-auto">{clip.title}</h1>
-      <ClipViewer slug={params.slug} clip={clip} tracks={tracks} poses={poses} narratives={narratives} />
+      <h1 className="font-serif text-2xl p-6 max-w-6xl mx-auto">{localizedTitle}</h1>
+      <ClipViewer slug={params.slug} clip={{ ...clip, title: localizedTitle }} tracks={tracks} poses={poses} narratives={narratives} />
     </main>
   );
 }

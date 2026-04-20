@@ -6,6 +6,7 @@ import { z } from "zod";
 export const clipManifestSchema = z.object({
   slug: z.string(),
   title: z.string(),
+  title_en: z.string().optional(),
   source: z.enum(["ai_generated", "real_footage"]),
   duration_s: z.number(),
   chapter_count: z.number().int().min(1),

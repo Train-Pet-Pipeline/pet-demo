@@ -12,11 +12,11 @@ mkdirSync(OUT, { recursive: true });
 // Spec §4 gallery is 2×2 — fixture MUST provide 4 AI clips so gallery.spec
 // can assert 2×2 layout deterministically, plus 1 real clip for page 2.
 const clips = [
-  { slug: "fixture-ai-1", source: "ai_generated", title: "Fixture AI 1", dur: 2, chapters: [[0, 1], [1, 2]] },
-  { slug: "fixture-ai-2", source: "ai_generated", title: "Fixture AI 2", dur: 2, chapters: null },
-  { slug: "fixture-ai-3", source: "ai_generated", title: "Fixture AI 3", dur: 2, chapters: null },
-  { slug: "fixture-ai-4", source: "ai_generated", title: "Fixture AI 4", dur: 2, chapters: null },
-  { slug: "fixture-real", source: "real_footage", title: "Fixture real", dur: 2, chapters: null },
+  { slug: "fixture-ai-1", source: "ai_generated", title: "Fixture AI 1", title_en: "Fixture AI 1", dur: 2, chapters: [[0, 1], [1, 2]] },
+  { slug: "fixture-ai-2", source: "ai_generated", title: "Fixture AI 2", title_en: "Fixture AI 2", dur: 2, chapters: null },
+  { slug: "fixture-ai-3", source: "ai_generated", title: "Fixture AI 3", title_en: "Fixture AI 3", dur: 2, chapters: null },
+  { slug: "fixture-ai-4", source: "ai_generated", title: "Fixture AI 4", title_en: "Fixture AI 4", dur: 2, chapters: null },
+  { slug: "fixture-real", source: "real_footage", title: "Fixture real", title_en: "Fixture real", dur: 2, chapters: null },
 ];
 
 function genVideo(outPath, dur) {
@@ -65,7 +65,7 @@ for (const c of clips) {
   writeFileSync(join(dir, "poses.json"), JSON.stringify(fakePoses(c.dur)));
   writeFileSync(join(dir, "narratives.json"), JSON.stringify(fakeNarratives(c.chapters, c.dur)));
   manifestEntries.push({
-    slug: c.slug, title: c.title, source: c.source, duration_s: c.dur,
+    slug: c.slug, title: c.title, title_en: c.title_en, source: c.source, duration_s: c.dur,
     chapter_count: c.chapters?.length ?? 1, width: 320, height: 240, tags: [],
   });
 }
