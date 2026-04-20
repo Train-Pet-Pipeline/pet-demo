@@ -4,6 +4,7 @@ import { SectionShell, SchematicOverlay } from "@purrai/ui";
 
 export function PrivacyFirst() {
   const t = useTranslations("privacy");
+  const ts = useTranslations("schematic");
   const steps = [
     { key: "step1", src: "/images/privacy/step-1.avif" },
     { key: "step2", src: "/images/privacy/step-2.avif" },
@@ -18,7 +19,7 @@ export function PrivacyFirst() {
       <div className="mt-12 grid grid-cols-1 gap-8 md:grid-cols-3">
         {steps.map(({ key, src }) => (
           <div key={key} className="flex flex-col items-center gap-4">
-            <SchematicOverlay className="w-full">
+            <SchematicOverlay className="w-full" badgeLabel={ts("label")} badgeAria={ts("aria")}>
               <div className="relative aspect-square w-full">
                 <Image src={src} alt="" fill sizes="(max-width: 768px) 100vw, 33vw" style={{ objectFit: "cover" }} />
               </div>
