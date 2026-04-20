@@ -1,8 +1,9 @@
 // app/[locale]/[slug]/page.tsx
 import { promises as fs } from "node:fs";
 import path from "node:path";
+import Link from "next/link";
 import { notFound } from "next/navigation";
-import { unstable_setRequestLocale } from "next-intl/server";
+import { unstable_setRequestLocale, getTranslations } from "next-intl/server";
 import { parseManifestOrEmpty, loadTracks } from "@/lib/artifacts";
 import { ClipViewer } from "@/components/ClipViewer";
 import { locales } from "../../../i18n";
@@ -27,6 +28,7 @@ export default async function Page({
   params: { locale: string; slug: string };
 }) {
   unstable_setRequestLocale(params.locale);
+  const t = await getTranslations({ locale: params.locale, namespace: "nav" });
   const base = path.join(process.cwd(), "public", "artifacts");
   const manifest = await parseManifestOrEmpty(async () =>
     JSON.parse(await fs.readFile(path.join(base, "manifest.json"), "utf-8")));
@@ -40,9 +42,14 @@ export default async function Page({
   ]);
   const localizedTitle = params.locale === "en" && clip.title_en ? clip.title_en : clip.title;
   return (
-    <main>
+    <main className="min-h-screen">
       <h1 className="font-serif text-2xl p-6 max-w-6xl mx-auto">{localizedTitle}</h1>
       <ClipViewer slug={params.slug} clip={{ ...clip, title: localizedTitle }} tracks={tracks} poses={poses} narratives={narratives} />
+      <div className="mt-16 border-t border-ink/10 pt-10 pb-20 text-center">
+        <Link href="/" className="text-clay hover:underline text-body">
+          ← {t("backToGallery")}
+        </Link>
+      </div>
     </main>
   );
 }

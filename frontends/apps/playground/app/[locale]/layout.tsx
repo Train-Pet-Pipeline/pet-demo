@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages, unstable_setRequestLocale } from "next-intl/server";
 import { locales } from "../../i18n";
+import { Header } from "../../components/Header";
 import "../globals.css";
 
 export const metadata: Metadata = {
@@ -30,6 +31,7 @@ export default async function LocaleLayout({
     <html lang={locale}>
       <body className="bg-cream text-ink">
         <NextIntlClientProvider locale={locale} messages={messages}>
+          <Header />
           {children}
         </NextIntlClientProvider>
       </body>

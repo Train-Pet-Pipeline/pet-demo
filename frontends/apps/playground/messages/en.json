@@ -2,7 +2,10 @@
   "nav": {
     "gallery": "Gallery",
     "back": "Back",
-    "viewDetail": "View Details"
+    "viewDetail": "View Details",
+    "switchToEn": "Switch to English",
+    "switchToZh": "切换至中文",
+    "backToGallery": "Back to gallery"
   },
   "layers": {
     "title": "Layers",
