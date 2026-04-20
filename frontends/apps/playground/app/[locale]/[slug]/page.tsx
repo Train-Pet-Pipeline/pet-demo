@@ -47,7 +47,7 @@ export default async function Page({
       <h1 className="font-serif text-2xl p-6 max-w-6xl mx-auto">{localizedTitle}</h1>
       <ClipViewer slug={params.slug} clip={{ ...clip, title: localizedTitle }} tracks={tracks} poses={poses} narratives={narratives} />
       <div className="mt-16 border-t border-ink/10 pt-10 pb-20 text-center">
-        <Link href="/" className="text-clay hover:underline text-body">
+        <Link href="/" className="text-ink underline underline-offset-4 hover:text-clay text-body focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-clay focus-visible:ring-offset-2 rounded">
           ← {t("backToGallery")}
         </Link>
       </div>
