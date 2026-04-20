@@ -46,7 +46,7 @@
       "01": { "title": "多目标检测与追踪", "body": "YOLO + ByteTrack,识别多只猫并保持身份." },
       "02": { "title": "Re-ID 个体识别", "body": "OSNet,在你家里区分每一只." },
       "03": { "title": "姿态与行为", "body": "AP-10K 关键点,捕捉理毛、跳跃、休息." },
-      "04": { "title": "VLM 自然语言摘要", "body": "InternVL2 微调,生成结构化健康笔记." }
+      "04": { "title": "VLM 自然语言摘要", "body": "Qwen2-VL 微调,生成结构化健康笔记." }
     }
   },
   "radar": {
@@ -83,6 +83,7 @@
   "closing": {
     "wordmark": "Purr·AI",
     "tagline": "因为我们终于听懂了。",
+    "playgroundCta": "先在演练场里看一眼 →",
     "subscribe": {
       "label": "邮箱订阅 · 获取首批邀请",
       "button": "订阅",

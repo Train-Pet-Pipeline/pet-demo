@@ -8,5 +8,5 @@ export default createMiddleware({
 });
 
 export const config = {
-  matcher: ["/((?!_next|api|artifacts|.*\\..*).*)"],
+  matcher: ["/((?!_next|api|artifacts|icon|.*\\..*).*)"],
 };

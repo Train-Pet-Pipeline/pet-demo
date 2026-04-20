@@ -17,32 +17,32 @@ export function LayerToggles({ showBBox, setBBox, showPose, setPose, showNarr, s
   return (
     <div className="space-y-2">
       <h4 className="text-sm font-semibold text-ink">{t("title")}</h4>
-      <label className="flex items-center gap-2 text-sm cursor-pointer">
+      <label className="flex items-center gap-2 text-sm cursor-pointer min-h-[32px]">
         <input
           type="checkbox"
           checked={showBBox}
           onChange={(e) => setBBox(e.target.checked)}
-          className="focus-visible:ring-2 focus-visible:ring-clay focus-visible:ring-offset-2"
+          className="w-4 h-4 accent-clay focus-visible:ring-2 focus-visible:ring-clay focus-visible:ring-offset-2"
         />
-        BBox
+        {t("tracks")}
       </label>
-      <label className="flex items-center gap-2 text-sm cursor-pointer">
+      <label className="flex items-center gap-2 text-sm cursor-pointer min-h-[32px]">
         <input
           type="checkbox"
           checked={showPose}
           onChange={(e) => setPose(e.target.checked)}
-          className="focus-visible:ring-2 focus-visible:ring-clay focus-visible:ring-offset-2"
+          className="w-4 h-4 accent-clay focus-visible:ring-2 focus-visible:ring-clay focus-visible:ring-offset-2"
         />
-        Pose
+        {t("poses")}
       </label>
-      <label className="flex items-center gap-2 text-sm cursor-pointer">
+      <label className="flex items-center gap-2 text-sm cursor-pointer min-h-[32px]">
         <input
           type="checkbox"
           checked={showNarr}
           onChange={(e) => setNarr(e.target.checked)}
-          className="focus-visible:ring-2 focus-visible:ring-clay focus-visible:ring-offset-2"
+          className="w-4 h-4 accent-clay focus-visible:ring-2 focus-visible:ring-clay focus-visible:ring-offset-2"
         />
-        Narrative
+        {t("narratives")}
       </label>
     </div>
   );
