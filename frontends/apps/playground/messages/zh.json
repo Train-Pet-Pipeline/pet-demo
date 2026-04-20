@@ -22,6 +22,11 @@
     "empty": "artifacts 未就绪"
   },
   "badges": {
-    "realFootage": "真实拍摄片段 · 模型未预设"
+    "aiGenerated": "AI 生成示意",
+    "realFootage": "真实拍摄 · 未预设"
+  },
+  "schematic": {
+    "label": "示意图 · 非真实推理输出",
+    "aria": "示意图标记：非真实推理输出"
   }
 }

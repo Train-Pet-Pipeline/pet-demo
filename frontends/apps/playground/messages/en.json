@@ -22,6 +22,11 @@
     "empty": "Artifacts not ready"
   },
   "badges": {
+    "aiGenerated": "AI generated",
     "realFootage": "Real footage · unscripted model"
+  },
+  "schematic": {
+    "label": "Illustration · not real inference output",
+    "aria": "Illustration badge: not real inference output"
   }
 }
