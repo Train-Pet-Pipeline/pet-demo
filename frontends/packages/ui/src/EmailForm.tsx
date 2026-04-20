@@ -67,7 +67,7 @@ export function EmailForm({
         <button
           type="submit"
           disabled={state === "submitting"}
-          className="bg-clay text-cream px-5 py-2 rounded-md text-sm font-medium hover:bg-clay/90 transition focus-visible:ring-2 focus-visible:ring-clay focus-visible:ring-offset-2 disabled:opacity-50"
+          className="bg-ink text-cream px-5 py-2 rounded-md text-sm font-medium hover:bg-ink/90 transition focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 disabled:opacity-50"
         >
           {buttonText}
         </button>
