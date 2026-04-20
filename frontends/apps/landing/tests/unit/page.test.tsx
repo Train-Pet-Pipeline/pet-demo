@@ -8,6 +8,8 @@ vi.mock("next-intl", () => ({
 
 vi.mock("next-intl/server", () => ({
   unstable_setRequestLocale: () => undefined,
+  getTranslations: async () => (key: string) =>
+    ({ skip: "跳到主内容" } as Record<string, string>)[key] ?? key,
 }));
 
 vi.mock("@/components/sections/Hero", () => ({ Hero: () => <div id="section-01-hero">Hero</div> }));
@@ -22,8 +24,9 @@ vi.mock("@/components/sections/Closing", () => ({ Closing: () => <div>Closing</d
 import HomePage from "@/app/[locale]/page";
 
 describe("HomePage", () => {
-  it("renders all sections + skip link", () => {
-    render(<HomePage params={{ locale: "zh" }} />);
+  it("renders all sections + skip link", async () => {
+    const ui = await HomePage({ params: { locale: "zh" } });
+    render(ui);
     expect(screen.getByText("Hero")).toBeInTheDocument();
     expect(screen.getByText("跳到主内容")).toBeInTheDocument();
   });

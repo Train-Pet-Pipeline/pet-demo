@@ -24,6 +24,7 @@ const dimensions: { key: string; value: number }[] = [
 
 export function EmotionRadar() {
   const t = useTranslations("radar");
+  const ts = useTranslations("schematic");
   const data = dimensions.map((d) => ({
     subject: t(`dimensions.${d.key}`),
     value: d.value,
@@ -35,7 +36,7 @@ export function EmotionRadar() {
         {t("intro")}
       </h2>
       <div className="mt-12 mx-auto max-w-xl">
-        <SchematicOverlay>
+        <SchematicOverlay badgeLabel={ts("label")} badgeAria={ts("aria")}>
           <ResponsiveContainer width="100%" height={400}>
             <RadarChart data={data}>
               <PolarGrid />

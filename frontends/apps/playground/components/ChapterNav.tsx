@@ -1,6 +1,8 @@
 // components/ChapterNav.tsx
 "use client";
 
+import { useTranslations } from "next-intl";
+
 interface Chapter { start: number; end: number; text: string; confidence: number; }
 
 interface Props {
@@ -16,20 +18,21 @@ function fmt(s: number): string {
 }
 
 export function ChapterNav({ chapters, currentIdx, onJump }: Props) {
+  const t = useTranslations("chapters");
   return (
     <div className="space-y-1">
-      <h4 className="text-sm font-semibold text-ink">章节</h4>
+      <h4 className="text-sm font-semibold text-ink">{t("title")}</h4>
       {chapters.map((ch, i) => (
         <button
           key={i}
           type="button"
           onClick={() => onJump(ch.start)}
-          aria-label={`章节 ${i + 1}`}
+          aria-label={t("label", { n: i + 1 })}
           className={`w-full text-left px-2 py-1 rounded text-sm ${
             i === currentIdx ? "bg-clay/20 font-medium" : "hover:bg-ink/5"
           }`}
         >
-          <span className="font-medium">章节 {i + 1}</span>
+          <span className="font-medium">{t("label", { n: i + 1 })}</span>
           <span className="ml-2 text-ink/70 text-xs">{fmt(ch.start)}–{fmt(ch.end)}</span>
         </button>
       ))}

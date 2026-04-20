@@ -5,6 +5,7 @@ const ABILITY_KEYS = ["01", "02", "03", "04"] as const;
 
 export function Abilities() {
   const t = useTranslations("abilities");
+  const ts = useTranslations("schematic");
   return (
     <SectionShell id="section-05-abilities" headingId="section-05-heading" className="px-6 py-24">
       <h2 id="section-05-heading" className="font-serif text-h1 text-ink text-center">
@@ -13,7 +14,7 @@ export function Abilities() {
       <div className="mt-12 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
         {ABILITY_KEYS.map((key) => (
           <div key={key} className="flex flex-col gap-4">
-            <SchematicOverlay>
+            <SchematicOverlay badgeLabel={ts("label")} badgeAria={ts("aria")}>
               <div className="aspect-square bg-cream rounded-md grid place-items-center">
                 <span className="text-mute text-caption">{key}</span>
               </div>
