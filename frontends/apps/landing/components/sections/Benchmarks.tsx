@@ -26,7 +26,7 @@ export async function Benchmarks({ locale }: { locale: string }) {
         {(data?.metrics ?? []).map((m) => (
           <div key={m.key} className="rounded-md bg-bone p-6">
             <div className="text-caption text-mute">{t(`metrics.${m.key}.label`)}</div>
-            <div className="mt-2 font-serif text-h1 text-ink">{m.value || t("metrics.updating")}{m.unit}</div>
+            <div className="mt-2 font-serif text-h1 text-ink">{m.value ? `${m.value}${m.unit}` : t("metrics.updating")}</div>
           </div>
         ))}
         {!data && <p className="text-mute">{t("metrics.updating")}</p>}

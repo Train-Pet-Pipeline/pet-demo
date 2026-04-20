@@ -22,7 +22,8 @@
   },
   "state": {
     "loading": "Loading",
-    "empty": "Artifacts not ready"
+    "empty": "Artifacts not ready",
+    "realSampleMissing": "Real footage not yet available"
   },
   "badges": {
     "aiGenerated": "AI generated",
