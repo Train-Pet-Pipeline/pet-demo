@@ -51,20 +51,30 @@ export function EmailForm({
 
   return (
     <form onSubmit={onSubmit} noValidate>
-      <label htmlFor={inputId}>{labelText}</label>
-      <input
-        id={inputId}
-        type="email"
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
-        aria-invalid={invalid}
-        aria-describedby={invalid ? errorId : undefined}
-        disabled={state === "submitting"}
-      />
-      {invalid && <span id={errorId} role="alert">请输入有效邮箱</span>}
-      {state === "busy" && <span role="alert">{busyText}</span>}
-      {state === "error" && <span role="alert">{errorText}</span>}
-      <button type="submit" disabled={state === "submitting"}>{buttonText}</button>
+      <label htmlFor={inputId} className="sr-only">{labelText}</label>
+      <div className="flex gap-2 items-center">
+        <input
+          id={inputId}
+          type="email"
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
+          aria-invalid={invalid}
+          aria-describedby={invalid ? errorId : undefined}
+          disabled={state === "submitting"}
+          placeholder={labelText}
+          className="border border-ink/30 bg-cream/80 px-4 py-2 rounded-md text-sm text-ink placeholder:text-mute flex-1 focus:ring-2 focus:ring-clay focus:outline-none disabled:opacity-50"
+        />
+        <button
+          type="submit"
+          disabled={state === "submitting"}
+          className="bg-clay text-cream px-5 py-2 rounded-md text-sm font-medium hover:bg-clay/90 transition focus-visible:ring-2 focus-visible:ring-clay focus-visible:ring-offset-2 disabled:opacity-50"
+        >
+          {buttonText}
+        </button>
+      </div>
+      {invalid && <span id={errorId} role="alert" className="mt-1 block text-xs text-clay">请输入有效邮箱</span>}
+      {state === "busy" && <span role="alert" className="mt-1 block text-xs text-mute">{busyText}</span>}
+      {state === "error" && <span role="alert" className="mt-1 block text-xs text-clay">{errorText}</span>}
     </form>
   );
 }
