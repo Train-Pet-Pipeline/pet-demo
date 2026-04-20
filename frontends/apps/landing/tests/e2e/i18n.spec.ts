@@ -21,10 +21,10 @@ test("LanguageSwitcher toggles from zh → en → zh", async ({ browser }) => {
   const context = await browser.newContext({ locale: "zh-CN" });
   const page = await context.newPage();
   await page.goto("/");
-  const toEn = page.getByRole("link", { name: "Switch to en" });
+  const toEn = page.getByRole("link", { name: "Switch to English" });
   await toEn.click();
   await expect(page).toHaveURL(/\/en\/?$/);
-  const toZh = page.getByRole("link", { name: "Switch to zh" });
+  const toZh = page.getByRole("link", { name: "切换至中文" });
   await toZh.click();
   await expect(page).toHaveURL(/^http:\/\/localhost:\d+\/?$/);
   await context.close();
