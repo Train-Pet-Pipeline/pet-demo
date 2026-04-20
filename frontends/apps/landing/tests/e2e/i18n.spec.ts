@@ -16,7 +16,7 @@ test("en route renders English hero", async ({ page }) => {
   await expect(page.getByText("Hear every purr")).toBeVisible();
 });
 
-test("LanguageSwitcher toggles from zh → en → zh", async ({ browser }) => {
+test("LanguageSwitcher toggles locale zh → en → zh", async ({ browser }) => {
   // Force zh Accept-Language so middleware serves zh at "/"
   const context = await browser.newContext({ locale: "zh-CN" });
   const page = await context.newPage();
