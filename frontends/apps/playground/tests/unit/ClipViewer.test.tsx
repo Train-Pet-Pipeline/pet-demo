@@ -10,6 +10,7 @@ vi.mock("next-intl", () => ({
       "narrative.title": "叙事",
       "badges.aiGenerated": "AI 生成示意",
       "badges.realFootage": "真实拍摄片段 · 模型未预设",
+      "badges.unscriptedBanner": "真实拍摄片段 · 模型未预设",
       "schematic.label": "示意图 · 非真实推理输出",
       "schematic.aria": "示意图标记：非真实推理输出",
     };

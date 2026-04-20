@@ -20,7 +20,7 @@ export default async function HomePage({ params: { locale } }: { params: { local
       <Alerts />
       <Abilities />
       <EmotionRadar />
-      <Benchmarks />
+      <Benchmarks locale={locale} />
       <Closing />
     </main>
   );

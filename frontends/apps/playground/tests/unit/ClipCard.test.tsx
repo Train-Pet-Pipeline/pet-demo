@@ -1,6 +1,6 @@
-import { describe, it, expect } from "vitest";
+import React from "react";
+import { describe, it, expect, vi } from "vitest";
 import { fireEvent, render, screen } from "@testing-library/react";
-import { ClipCard } from "@/components/ClipCard";
 
 vi.mock("next-intl", () => ({
   useTranslations: () => (k: string) => {
@@ -14,6 +14,16 @@ vi.mock("next-intl", () => ({
     return map[k] ?? k;
   },
 }));
+
+vi.mock("next-intl/navigation", () => ({
+  createSharedPathnamesNavigation: () => ({
+    Link: ({ href, children, ...props }: { href: string; children: React.ReactNode } & Record<string, unknown>) =>
+      React.createElement("a", { href, ...props }, children),
+    usePathname: () => "/",
+  }),
+}));
+
+import { ClipCard } from "@/components/ClipCard";
 
 const clip = {
   slug: "a", title: "Title A", source: "ai_generated" as const,
@@ -29,9 +39,9 @@ describe("ClipCard", () => {
     render(<ClipCard clip={clip} />);
     expect(screen.getByText(/AI 生成/)).toBeInTheDocument();
   });
-  it("links to /playground/<slug>", () => {
+  it("links to locale-aware /<slug>", () => {
     render(<ClipCard clip={clip} />);
-    expect(screen.getByRole("link")).toHaveAttribute("href", "/playground/a");
+    expect(screen.getByRole("link")).toHaveAttribute("href", "/a");
   });
 });
 

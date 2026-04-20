@@ -26,10 +26,18 @@
   },
   "badges": {
     "aiGenerated": "AI generated",
-    "realFootage": "Real footage · unscripted model"
+    "realFootage": "Real footage · unscripted",
+    "unscriptedBanner": "Real footage · unscripted"
   },
   "schematic": {
     "label": "Illustration · not real inference output",
-    "aria": "Illustration badge: not real inference output"
+    "aria": "Illustration: not real inference output"
+  },
+  "a11y": {
+    "skip": "Skip to main content"
+  },
+  "meta": {
+    "title": "Purr·AI Playground",
+    "description": "Step through the on-device pet-health pipeline: detect · track · re-id · pose · narrate."
   }
 }

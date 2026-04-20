@@ -8,17 +8,22 @@ describe("SchematicOverlay", () => {
     expect(screen.getByTestId("inner")).toBeInTheDocument();
   });
 
-  it("always injects IllustrationBadge", () => {
-    render(<SchematicOverlay><div>x</div></SchematicOverlay>);
-    expect(screen.getByText("示意图 · 非真实推理输出")).toBeInTheDocument();
+  it("injects IllustrationBadge when badgeLabel is provided", () => {
+    render(<SchematicOverlay badgeLabel="test label" badgeAria="test aria"><div>x</div></SchematicOverlay>);
+    expect(screen.getByText("test label")).toBeInTheDocument();
   });
 
-  it("badge is present even when children include their own absolute children", () => {
+  it("omits IllustrationBadge when no badgeLabel is provided (caller manages their own)", () => {
+    render(<SchematicOverlay><div>x</div></SchematicOverlay>);
+    expect(screen.queryByRole("note")).not.toBeInTheDocument();
+  });
+
+  it("injected badge coexists with absolutely-positioned child content", () => {
     render(
-      <SchematicOverlay>
+      <SchematicOverlay badgeLabel="coexist label" badgeAria="coexist aria">
         <span style={{ position: "absolute", top: 0 }}>conflict</span>
       </SchematicOverlay>
     );
-    expect(screen.getByText("示意图 · 非真实推理输出")).toBeInTheDocument();
+    expect(screen.getByText("coexist label")).toBeInTheDocument();
   });
 });

@@ -14,8 +14,11 @@ async function loadBenchmarks() {
   }
 }
 
-export async function Benchmarks() {
-  const [data, t] = await Promise.all([loadBenchmarks(), getTranslations("benchmarks")]);
+export async function Benchmarks({ locale }: { locale: string }) {
+  const [data, t] = await Promise.all([
+    loadBenchmarks(),
+    getTranslations({ locale, namespace: "benchmarks" }),
+  ]);
   return (
     <SectionShell id="section-07-benchmarks" headingId="section-07-heading" className="px-6 py-24">
       <h2 id="section-07-heading" className="font-serif text-h1 text-ink">{t("heading")}</h2>

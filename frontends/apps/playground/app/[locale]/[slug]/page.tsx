@@ -1,12 +1,17 @@
 // app/[locale]/[slug]/page.tsx
 import { promises as fs } from "node:fs";
 import path from "node:path";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { unstable_setRequestLocale, getTranslations } from "next-intl/server";
+import { createSharedPathnamesNavigation } from "next-intl/navigation";
 import { parseManifestOrEmpty, loadTracks } from "@/lib/artifacts";
 import { ClipViewer } from "@/components/ClipViewer";
 import { locales } from "../../../i18n";
+
+const { Link: IntlLink } = createSharedPathnamesNavigation({
+  locales: [...locales],
+  localePrefix: "as-needed",
+});
 
 interface NarrativeChapter { start: number; end: number; text: string; confidence: number; }
 interface NarrativesFile { chapters: NarrativeChapter[]; }
@@ -47,9 +52,12 @@ export default async function Page({
       <h1 className="font-serif text-2xl p-6 max-w-6xl mx-auto">{localizedTitle}</h1>
       <ClipViewer slug={params.slug} clip={{ ...clip, title: localizedTitle }} tracks={tracks} poses={poses} narratives={narratives} />
       <div className="mt-16 border-t border-ink/10 pt-10 pb-20 text-center">
-        <Link href="/" className="text-ink underline underline-offset-4 hover:text-clay text-body focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-clay focus-visible:ring-offset-2 rounded">
+        <IntlLink
+          href="/"
+          className="inline-flex items-center min-h-[44px] px-4 py-2 text-ink underline underline-offset-4 hover:text-clay text-body focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-clay focus-visible:ring-offset-2 rounded"
+        >
           ← {t("backToGallery")}
-        </Link>
+        </IntlLink>
       </div>
     </main>
   );
