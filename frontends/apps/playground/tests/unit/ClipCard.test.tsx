@@ -2,6 +2,19 @@ import { describe, it, expect } from "vitest";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { ClipCard } from "@/components/ClipCard";
 
+vi.mock("next-intl", () => ({
+  useTranslations: () => (k: string) => {
+    const map: Record<string, string> = {
+      "nav.viewDetail": "View Details",
+      "badges.aiGenerated": "AI 生成示意",
+      "badges.realFootage": "真实拍摄 · 未预设",
+      "schematic.label": "示意图 · 非真实推理输出",
+      "schematic.aria": "示意图标记：非真实推理输出",
+    };
+    return map[k] ?? k;
+  },
+}));
+
 const clip = {
   slug: "a", title: "Title A", source: "ai_generated" as const,
   duration_s: 8, chapter_count: 1, width: 1280, height: 720, tags: [],
@@ -35,7 +48,7 @@ it("initially shows poster, no video playing", () => {
 
 it("click triggers play once", async () => {
   render(<ClipCard clip={clip2} />);
-  const btn = screen.getByRole("button", { name: /播放 A/ });
+  const btn = screen.getByRole("button", { name: /View Details A/ });
   const video = screen.getByTestId("clip-video") as HTMLVideoElement;
   video.play = vi.fn().mockResolvedValue(undefined);
   fireEvent.click(btn);
