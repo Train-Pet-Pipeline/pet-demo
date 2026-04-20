@@ -10,12 +10,15 @@ export function Alerts() {
       <h2 id="section-04-heading" className="font-serif text-h1 text-ink text-center">
         {t("intro")}
       </h2>
-      <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <div className="mt-14 grid grid-cols-1 gap-x-10 gap-y-10 md:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto">
         {ALERT_KEYS.map((key) => (
-          <div key={key} className="bg-bone rounded-md p-6">
-            <h3 className="font-serif text-h2 text-ink">{t(`items.${key}.title`)}</h3>
-            <p className="mt-2 text-body text-mute">{t(`items.${key}.body`)}</p>
-          </div>
+          <article key={key} className="relative pl-5 border-l border-ink/10 transition-colors hover:border-clay/60">
+            <span className="font-serif text-caption tracking-[0.2em] text-clay/80 block mb-2">
+              {`— ${key}`}
+            </span>
+            <h3 className="font-serif text-h2 text-ink leading-tight">{t(`items.${key}.title`)}</h3>
+            <p className="mt-3 text-body text-mute leading-relaxed">{t(`items.${key}.body`)}</p>
+          </article>
         ))}
       </div>
     </SectionShell>

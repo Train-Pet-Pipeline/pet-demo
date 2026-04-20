@@ -8,8 +8,8 @@ vi.mock("next-intl", () => ({
       "nav.viewDetail": "View Details",
       "badges.aiGenerated": "AI 生成示意",
       "badges.realFootage": "真实拍摄 · 未预设",
-      "schematic.label": "示意图 · 非真实推理输出",
-      "schematic.aria": "示意图标记：非真实推理输出",
+      "schematic.label": "基线推理",
+      "schematic.aria": "基线推理",
     };
     return map[k] ?? k;
   },
