@@ -1,6 +1,6 @@
 {
   "framework": "nextjs",
-  "buildCommand": "cd ../../.. && bash scripts/fetch-artifacts.sh v0.4.0 --dest frontends/apps/playground/public/artifacts --tarball || true && pnpm -F playground build",
+  "buildCommand": "cd ../../.. && bash scripts/fetch-artifacts.sh v0.4.1 --dest frontends/apps/playground/public/artifacts --tarball || true && pnpm -F playground build",
   "installCommand": "cd ../../.. && pnpm install --frozen-lockfile",
   "outputDirectory": ".next"
 }

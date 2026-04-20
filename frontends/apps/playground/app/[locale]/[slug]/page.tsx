@@ -20,6 +20,15 @@ async function readJson<T>(file: string): Promise<T> {
   return JSON.parse(await fs.readFile(file, "utf-8")) as T;
 }
 
+async function readJsonWithFallback<T>(primary: string, fallback: string): Promise<T> {
+  try {
+    return JSON.parse(await fs.readFile(primary, "utf-8")) as T;
+  } catch (err: unknown) {
+    if ((err as NodeJS.ErrnoException)?.code !== "ENOENT") throw err;
+    return JSON.parse(await fs.readFile(fallback, "utf-8")) as T;
+  }
+}
+
 export async function generateStaticParams() {
   const p = path.join(process.cwd(), "public", "artifacts", "manifest.json");
   const m = await parseManifestOrEmpty(async () => JSON.parse(await fs.readFile(p, "utf-8")));
@@ -40,10 +49,14 @@ export default async function Page({
   const clip = manifest.clips.find((c) => c.slug === params.slug);
   if (!clip) notFound();
   const dir = path.join(base, params.slug);
+  const narrativesPath = params.locale === "en"
+    ? path.join(dir, "narratives.en.json")
+    : path.join(dir, "narratives.json");
+  const narrativesFallback = path.join(dir, "narratives.json");
   const [tracks, poses, narratives] = await Promise.all([
     loadTracks(dir),
     readJson<{ fps: number; schema: string; frames: { t: number; poses: { id: number; keypoints: number[][] }[] }[] }>(path.join(dir, "poses.json")),
-    readJson<NarrativesFile>(path.join(dir, "narratives.json")),
+    readJsonWithFallback<NarrativesFile>(narrativesPath, narrativesFallback),
   ]);
   const clipAny = clip as typeof clip & { title_en?: string };
   const localizedTitle = params.locale === "en" && clipAny.title_en ? clipAny.title_en : clip.title;

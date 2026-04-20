@@ -46,6 +46,7 @@ class ClipSpec:
     title: str
     tags: list[str]
     chapters: list[tuple[float, float]] | None
+    title_en: str | None = None
 
 
 def _load_yaml(yaml_path: Path) -> list[ClipSpec]:
@@ -63,6 +64,7 @@ def _load_yaml(yaml_path: Path) -> list[ClipSpec]:
                 title=entry["title"],
                 tags=list(entry.get("tags", [])),
                 chapters=chapters,
+                title_en=entry.get("title_en"),
             )
         )
     return clips
@@ -255,18 +257,19 @@ def bake_m4_from_yaml(
             _extract_thumb(raw_dst, bundle / "thumb.avif", at_s=min(1.0, duration / 2))
 
             chapter_count = len(clip.chapters) if clip.chapters else 1
-            clips_info.append(
-                {
-                    "slug": clip.slug,
-                    "title": clip.title,
-                    "source": clip.source,
-                    "duration_s": round(duration, 3),
-                    "chapter_count": chapter_count,
-                    "width": TARGET_W,
-                    "height": TARGET_H,
-                    "tags": clip.tags,
-                }
-            )
+            clip_entry: dict[str, object] = {
+                "slug": clip.slug,
+                "title": clip.title,
+                "source": clip.source,
+                "duration_s": round(duration, 3),
+                "chapter_count": chapter_count,
+                "width": TARGET_W,
+                "height": TARGET_H,
+                "tags": clip.tags,
+            }
+            if clip.title_en:
+                clip_entry["title_en"] = clip.title_en
+            clips_info.append(clip_entry)
     finally:
         pipeline.shutdown()
         manifest = {

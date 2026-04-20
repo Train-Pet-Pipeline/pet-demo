@@ -22,7 +22,8 @@
   },
   "state": {
     "loading": "加载中",
-    "empty": "artifacts 未就绪"
+    "empty": "artifacts 未就绪",
+    "realSampleMissing": "真实素材尚未入库"
   },
   "badges": {
     "aiGenerated": "AI 生成示意",
