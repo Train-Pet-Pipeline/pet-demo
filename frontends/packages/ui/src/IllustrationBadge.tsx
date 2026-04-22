@@ -22,12 +22,16 @@ export function IllustrationBadge({
         position: "absolute",
         right: 8,
         bottom: 8,
+        maxWidth: "calc(100% - 16px)",
         padding: "2px 8px",
         borderRadius: 4,
         background: "rgba(31,26,23,0.65)",
         color: "#FFFCF7",
         fontSize: 11,
         fontFamily: "var(--font-sans, sans-serif)",
+        whiteSpace: "nowrap",
+        overflow: "hidden",
+        textOverflow: "ellipsis",
         ...style,
       }}
     >

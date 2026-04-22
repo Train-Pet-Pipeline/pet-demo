@@ -7,10 +7,12 @@ clips:
     source_mp4: videos/raw-shorts/playful-jump.mp4
     source: ai_generated
     title: "玩耍起跳"
+    title_en: "Playful jump"
     tags: [daily, baseline]
 
   - slug: real-footage-6s
     source_mp4: videos/raw-real/real-footage-6s.mp4
     source: real_footage
     title: "真实素材 · 前 6 秒"
+    title_en: "Real footage · first 6s"
     tags: [unscripted, multi-cat]
