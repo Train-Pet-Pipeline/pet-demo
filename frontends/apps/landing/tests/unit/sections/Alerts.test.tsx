@@ -9,12 +9,12 @@ const translations: Record<string, string> = {
   "items.04.title": "睡眠模式骤变",
   "items.05.title": "理毛过度",
   "items.06.title": "失踪 ≥ 4h",
-  "items.01.body": "持续低吟或求救声,我们记下时间和情绪.",
-  "items.02.body": "粮碗未变化,可能是健康警示.",
-  "items.03.body": "短促咳嗽或反复抬头,需要关注.",
-  "items.04.body": "白夜节律突然反转,可能是潜在病兆.",
-  "items.05.body": "局部反复舔舐,可能是焦虑或皮肤问题.",
-  "items.06.body": "Re-ID 模型未识别到它,我们告诉你.",
+  "items.01.body": "持续低吟或求救声，我们记下时间和情绪。",
+  "items.02.body": "粮碗未变化，可能是健康警示。",
+  "items.03.body": "短促咳嗽或反复抬头，需要关注。",
+  "items.04.body": "白夜节律突然反转，可能是潜在病兆。",
+  "items.05.body": "局部反复舔舐，可能是焦虑或皮肤问题。",
+  "items.06.body": "Re-ID 模型未识别到它，我们告诉你。",
 };
 
 vi.mock("next-intl", () => ({

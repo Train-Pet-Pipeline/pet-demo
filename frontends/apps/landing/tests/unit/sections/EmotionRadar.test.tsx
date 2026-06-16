@@ -12,7 +12,7 @@ vi.mock("recharts", () => ({
 
 const translationsByNs: Record<string, Record<string, string>> = {
   radar: {
-    intro: "情绪的八个面向,从一段时间观察它的状态",
+    intro: "情绪的八个面向，从一段时间观察它的状态",
     "dimensions.calm": "平静",
     "dimensions.alert": "警觉",
     "dimensions.playful": "玩心",
@@ -21,10 +21,6 @@ const translationsByNs: Record<string, Record<string, string>> = {
     "dimensions.fatigue": "疲惫",
     "dimensions.appetite": "食欲",
     "dimensions.vocal": "话痨",
-  },
-  schematic: {
-    label: "示意图 · 非真实推理输出",
-    aria: "示意图,非真实推理输出",
   },
 };
 
@@ -35,10 +31,9 @@ vi.mock("next-intl", () => ({
 import { EmotionRadar } from "@/components/sections/EmotionRadar";
 
 describe("EmotionRadar section", () => {
-  it("renders intro + 8 dimension labels + at least 1 badge", () => {
+  it("renders intro + radar chart", () => {
     render(<EmotionRadar />);
-    expect(screen.getByText("情绪的八个面向,从一段时间观察它的状态")).toBeInTheDocument();
-    const badges = screen.getAllByText("示意图 · 非真实推理输出");
-    expect(badges.length).toBeGreaterThanOrEqual(1);
+    expect(screen.getByText("情绪的八个面向，从一段时间观察它的状态")).toBeInTheDocument();
+    expect(screen.getByTestId("radar")).toBeInTheDocument();
   });
 });
